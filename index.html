@@ -408,12 +408,13 @@
                 <h2 class="font-display text-4xl font-bold mb-4">Welcome Aboard!</h2>
                 <p class="text-gray-400 text-lg mb-8">Your account has been successfully created.</p>
                 <div class="flex gap-4 justify-center">
-                    <button onclick="logout()" class="btn-secondary px-8 py-3 rounded-xl font-medium">
+                    <!-- <button onclick="logout()" class="btn-secondary px-8 py-3 rounded-xl font-medium">
                         Log Out
-                    </button>
-                    <button class="btn-primary px-8 py-3 rounded-xl font-medium">
+                    </button> -->
+                    <!-- <button class="btn-primary px-8 py-3 rounded-xl font-medium">
                         Go to Dashboard
-                    </button>
+                    </button> -->
+                    <P>Redirecting to Dashboard</P>
                 </div>
             </div>
         </div>
@@ -439,7 +440,7 @@ const API_CONFIG = {
     LOGIN_API_URL: 'https://appbanking.onrender.com/api/v1',      // Login service
     SIGNUP_API_URL: 'https://appbanking.onrender.com/api/v1/user',  // Signup service
    
-    TIMEOUT: 3000,  // 30 seconds for Render cold start
+    TIMEOUT: 10000,  // 30 seconds for Render cold start
     RETRY_ATTEMPTS: 2
 };
 
@@ -501,6 +502,12 @@ async function loginApiRequest(endpoint, options = {}) {
             signal: controller.signal
             // REMOVED: credentials: 'include' (causes CORS error with wildcard)
         });
+        if(response.ok){
+            setTimeout(() => {
+                window.location.href = 'dashboard.html'
+            }, 3000);
+        }
+
         
         clearTimeout(timeoutId);
         
@@ -657,6 +664,11 @@ async function registerUser(fullName, email, password) {
             user: data.user || null,
             message: data.message || 'Account created successfully'
         };
+         if(response.ok){
+            setTimeout(() => {
+                window.location.href = 'dashboard.html'
+            }, 3000);
+        }
         
     } catch (error) {
         // If timeout, check if account was actually created
@@ -669,7 +681,13 @@ async function registerUser(fullName, email, password) {
                     token: loginData.token,
                     user: loginData.user,
                     message: 'Account created successfully! (Auto-logged in)'
+                    
                 };
+                 if(response.ok){
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html'
+                    }, 3000);
+        }
             } catch (loginErr) {
                 // Login failed too - really an error
                 throw new Error('Signup timed out. Please check your email - if account was created, please login.');

