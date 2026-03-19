@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaBank - Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #0A0A0F;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .glass {
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .text-accent { color: #00D4FF; }
+        .bg-accent { background-color: #00D4FF; }
+        .border-accent { border-color: #00D4FF; }
+        .text-success { color: #00FF88; }
+        .bg-success { background-color: #00FF88; }
+        .text-error { color: #FF4757; }
+        .bg-error { background-color: #FF4757; }
+        
+        /* Nova Logo Animation */
+        .nova-logo {
+            width: 40px;
+            height: 40px;
+            position: relative;
+        }
+        
+        .nova-logo svg {
+            width: 100%;
+            height: 100%;
+            animation: spin-slow 20s linear infinite;
+        }
+        
+        .nova-logo circle:nth-child(2) {
+            animation: pulse-ring 3s ease-in-out infinite;
+        }
+        
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse-ring {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slide-in-right {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes scale-in {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.3),
+                            0 0 40px rgba(0, 212, 255, 0.2),
+                            0 0 60px rgba(0, 212, 255, 0.1);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(0, 212, 255, 0.5),
+                            0 0 60px rgba(0, 212, 255, 0.3),
+                            0 0 90px rgba(0, 212, 255, 0.2);
+            }
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-slide-up {
+            animation: slide-up 0.6s ease-out forwards;
+        }
+        
+        .animate-slide-in-right {
+            animation: slide-in-right 0.6s ease-out forwards;
+        }
+        
+        .animate-scale-in {
+            animation: scale-in 0.5s ease-out forwards;
+        }
+        
+        .animate-fade-in-up {
+            animation: fade-in-up 0.8s ease-out forwards;
+        }
+        
+        .animate-glow {
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; opacity: 0; animation-fill-mode: forwards; }
+        .stagger-2 { animation-delay: 0.2s; opacity: 0; animation-fill-mode: forwards; }
+        .stagger-3 { animation-delay: 0.3s; opacity: 0; animation-fill-mode: forwards; }
+        .stagger-4 { animation-delay: 0.4s; opacity: 0; animation-fill-mode: forwards; }
+        .stagger-5 { animation-delay: 0.5s; opacity: 0; animation-fill-mode: forwards; }
+        
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Orb animations */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+        }
+        
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(0, 212, 255, 0.15);
+            top: -100px;
+            left: -100px;
+            animation: float 10s ease-in-out infinite;
+        }
+        
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(147, 51, 234, 0.15);
+            bottom: -50px;
+            right: -50px;
+            animation: float 12s ease-in-out infinite;
+            animation-delay: 3s;
+        }
+        
+        .orb-3 {
+            width: 200px;
+            height: 200px;
+            background: rgba(0, 255, 136, 0.1);
+            top: 50%;
+            left: 30%;
+            animation: float 15s ease-in-out infinite;
+            animation-delay: 5s;
+        }
+        
+        /* Form styling */
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #00D4FF;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            outline: none;
+        }
+        
+        .form-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: #00D4FF;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1A1A2E;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00D4FF;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #00D4FF;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Tab styling */
+        .tab-btn {
+            position: relative;
+            padding-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.3s;
+        }
+        
+        .tab-btn.active {
+            color: #00D4FF;
+        }
+        
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00D4FF;
+            transition: width 0.3s;
+        }
+        
+        .tab-btn.active::after {
+            width: 100%;
+        }
+        
+        /* Avatar upload overlay */
+        .avatar-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 50%;
+        }
+        
+        .avatar-container:hover .avatar-overlay {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+
+    <!-- Animated Background Orbs -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="glass sticky top-0 z-50 px-6 py-4 animate-slide-up">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3 animate-float">
+                <div class="nova-logo">
+                    <svg viewBox="0 0 100 100" fill="none">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0099CC;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="45" stroke="url(#gradient)" stroke-width="2" stroke-dasharray="10 5" opacity="0.6"/>
+                        <circle cx="50" cy="50" r="35" stroke="#00D4FF" stroke-width="4" stroke-linecap="round"/>
+                        <text x="50" y="58" text-anchor="middle" fill="#00D4FF" font-family="Space Grotesk" font-weight="700" font-size="28">N</text>
+                    </svg>
+                </div>
+                <div>
+                    <span class="font-display font-bold text-xl">Nova<span class="text-accent">Bank</span></span>
+                    <p class="text-xs text-gray-400">Profile Settings</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="window.location.href='dashboard.html'" class="btn-secondary px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 p-6 max-w-5xl mx-auto">
+        
+        <!-- Profile Header Card -->
+        <div class="glass-card rounded-3xl p-8 mb-6 animate-slide-up stagger-1 hover-lift">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <!-- Avatar Section -->
+                <div class="relative avatar-container group cursor-pointer" onclick="document.getElementById('avatarInput').click()">
+                    <div id="profileAvatar" class="w-32 h-32 rounded-full bg-gradient-to-br from-accent to-purple-600 flex items-center justify-center text-4xl font-bold animate-glow overflow-hidden">
+                        <!-- Initials or image will be inserted here -->
+                    </div>
+                    <div class="avatar-overlay">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
+                </div>
+                
+                <!-- Profile Info -->
+                <div class="flex-1 text-center md:text-left">
+                    <h1 class="font-display text-3xl font-bold mb-2" id="profileFullName">Loading...</h1>
+                    <p class="text-gray-400 mb-4" id="profileEmail">Loading...</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                        <span class="px-3 py-1 rounded-full bg-accent/20 text-accent text-sm font-medium border border-accent/30">
+                            Premium Account
+                        </span>
+                        <span class="px-3 py-1 rounded-full bg-success/20 text-success text-sm font-medium border border-success/30 flex items-center gap-1">
+                            <span class="w-2 h-2 bg-success rounded-full animate-pulse"></span>
+                            Verified
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="glass rounded-2xl p-4">
+                        <p class="text-2xl font-bold text-accent" id="memberSince">--</p>
+                        <p class="text-xs text-gray-400">Member Since</p>
+                    </div>
+                    <div class="glass rounded-2xl p-4">
+                        <p class="text-2xl font-bold text-success" id="accountNumber">****</p>
+                        <p class="text-xs text-gray-400">Account</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="flex gap-8 mb-6 border-b border-gray-800 animate-slide-up stagger-2">
+            <button class="tab-btn active text-sm font-medium pb-4" onclick="switchTab('personal', this)">
+                Personal Information
+            </button>
+            <button class="tab-btn text-sm font-medium pb-4" onclick="switchTab('security', this)">
+                Security Settings
+            </button>
+            <button class="tab-btn text-sm font-medium pb-4" onclick="switchTab('preferences', this)">
+                Preferences
+            </button>
+        </div>
+
+        <!-- Personal Information Tab -->
+        <div id="tab-personal" class="tab-content animate-fade-in-up">
+            <div class="glass-card rounded-3xl p-8 hover-lift">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="font-display text-xl font-bold flex items-center gap-2">
+                        <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        Personal Details
+                    </h2>
+                    <button onclick="toggleEditMode()" id="editBtn" class="btn-secondary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Edit Profile
+                    </button>
+                </div>
+
+                <form id="profileForm" class="grid md:grid-cols-2 gap-6">
+                    <!-- Full Name -->
+                    <div class="space-y-2">
+                        <label class="text-sm text-gray-400">Full Name</label>
+                        <input type="text" id="editFullName" disabled
+                            class="form-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500"
+                            placeholder="Enter your full name">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="space-y-2">
+                        <label class="text-sm text-gray-400">Email Address</label>
+                        <input type="email" id="editEmail" disabled
+                            class="form-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500"
+                            placeholder="Enter your email">
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="space-y-2">
+                        <label class="text-sm text-gray-400">Phone Number</label>
+                        <input type="tel" id="editPhone" disabled
+                            class="form-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500"
+                            placeholder="Enter your phone number">
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="space-y-2">
+                        <label class="text-sm text-gray-400">Date of Birth</label>
+                        <input type="date" id="editDob" disabled
+                            class="form-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500">
+                    </div>
+
+                    <!-- Address -->
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-sm text-gray-400">Residential Address</label>
+                        <textarea id="editAddress" disabled rows="3"
+                            class="form-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500 resize-none"
+                            placeholder="Enter your address"></textarea>
+                    </div>
+
+                    <!-- Save Button (Hidden by default) -->
+                    <div id="saveBtnContainer" class="md:col-span-2 hidden">
+                        <button type="button" onclick="saveProfile()" class="btn-primary w-full md:w-auto px-8 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                            <span id="saveBtnText">Save Changes</span>
+                            <div id="saveSpinner" class="spinner hidden"></div>
+                        </button>
+                        <button type="button" onclick="cancelEdit()" class="ml-4 btn-secondary px-6 py-3 rounded-xl font-medium">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Account Information (Read Only) -->
+            <div class="glass-card rounded-3xl p-8 mt-6 hover-lift">
+                <h2 class="font-display text-xl font-bold mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                    </svg>
+                    Account Information
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-sm text-gray-400">Account Number</label>
+                        <div class="flex items-center gap-3">
+                            <input type="text" id="displayAccountNumber" readonly
+                                class="form-input w-full rounded-xl px-4 py-3 text-white bg-white/5 cursor-not-allowed"
+                                value="**** **** **** 0000">
+                            <button onclick="toggleAccountVisibility()" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="accountEyeIcon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm text-gray-400">Account Type</label>
+                        <input type="text" readonly
+                            class="form-input w-full rounded-xl px-4 py-3 text-white bg-white/5 cursor-not-allowed"
+                            value="Premium Savings">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm text-gray-400">Currency</label>
+                        <input type="text" readonly
+                            class="form-input w-full rounded-xl px-4 py-3 text-white bg-white/5 cursor-not-allowed"
+                            value="USD - US Dollar">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm text-gray-400">Account Status</label>
+                        <div class="flex items-center gap-2 px-4 py-3 rounded-xl bg-success/10 border border-success/30">
+                            <span class="w-2 h-2 bg-success rounded-full animate-pulse"></span>
+                            <span class="text-success font-medium">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Settings Tab -->
+        <div id="tab-security" class="tab-content hidden animate-fade-in-up">
+            <div class="glass-card rounded-3xl p-8 hover-lift">
+                <h2 class="font-display text-xl font-bold mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    Security Settings
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Change Password -->
+                    <div class="border-b border-gray-800 pb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-semibold mb-1">Change Password</h3>
+                                <p class="text-sm text-gray-400">Update your password to keep your account secure</p>
+                            </div>
+                            <button onclick="togglePasswordForm()" class="btn-secondary px-4 py-2 rounded-xl text-sm">
+                                Change
+                            </button>
+                        </div>
+                        
+                        <form id="passwordForm" class="hidden grid md:grid-cols-2 gap-4 mt-4">
+                            <div class="space-y-2">
+                                <label class="text-sm text-gray-400">Current Password</label>
+                                <input type="password" id="currentPassword"
+                                    class="form-input w-full rounded-xl px-4 py-3 text-white"
+                                    placeholder="Enter current password">
+                            </div>
+                            <div></div>
+                            <div class="space-y-2">
+                                <label class="text-sm text-gray-400">New Password</label>
+                                <input type="password" id="newPassword"
+                                    class="form-input w-full rounded-xl px-4 py-3 text-white"
+                                    placeholder="Enter new password">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm text-gray-400">Confirm New Password</label>
+                                <input type="password" id="confirmPassword"
+                                    class="form-input w-full rounded-xl px-4 py-3 text-white"
+                                    placeholder="Confirm new password">
+                            </div>
+                            <div class="md:col-span-2">
+                                <button type="button" onclick="changePassword()" class="btn-primary px-6 py-3 rounded-xl font-semibold">
+                                    Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Two-Factor Authentication -->
+                    <div class="border-b border-gray-800 pb-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-semibold mb-1">Two-Factor Authentication</h3>
+                                <p class="text-sm text-gray-400">Add an extra layer of security to your account</p>
+                            </div>
+                            <div class="toggle-switch" id="2faToggle" onclick="toggle2FA()"></div>
+                        </div>
+                    </div>
+
+                    <!-- Login Notifications -->
+                    <div class="border-b border-gray-800 pb-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-semibold mb-1">Login Notifications</h3>
+                                <p class="text-sm text-gray-400">Get notified when someone logs into your account</p>
+                            </div>
+                            <div class="toggle-switch active" id="loginNotifyToggle" onclick="toggleLoginNotifications()"></div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Alerts -->
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-semibold mb-1">Transaction Alerts</h3>
+                                <p class="text-sm text-gray-400">Receive alerts for all transactions</p>
+                            </div>
+                            <div class="toggle-switch active" id="transactionToggle" onclick="toggleTransactionAlerts()"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="glass-card rounded-3xl p-8 mt-6 border border-error/30 hover-lift">
+                <h2 class="font-display text-xl font-bold mb-6 text-error flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    Danger Zone
+                </h2>
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-semibold mb-1 text-white">Close Account</h3>
+                        <p class="text-sm text-gray-400">Permanently delete your account and all associated data</p>
+                    </div>
+                    <button onclick="showDeleteAccountModal()" class="px-6 py-3 rounded-xl border border-error text-error hover:bg-error/20 transition-all font-medium">
+                        Close Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preferences Tab -->
+        <div id="tab-preferences" class="tab-content hidden animate-fade-in-up">
+            <div class="glass-card rounded-3xl p-8 hover-lift">
+                <h2 class="font-display text-xl font-bold mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Preferences
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Language -->
+                    <div class="flex items-center justify-between border-b border-gray-800 pb-6">
+                        <div>
+                            <h3 class="font-semibold mb-1">Language</h3>
+                            <p class="text-sm text-gray-400">Select your preferred language</p>
+                        </div>
+                        <select id="languageSelect" onchange="changeLanguage(this.value)" 
+                            class="form-input rounded-xl px-4 py-2 text-white min-w-[150px]">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+
+                    <!-- Timezone -->
+                    <div class="flex items-center justify-between border-b border-gray-800 pb-6">
+                        <div>
+                            <h3 class="font-semibold mb-1">Timezone</h3>
+                            <p class="text-sm text-gray-400">Set your local timezone</p>
+                        </div>
+                        <select id="timezoneSelect" onchange="changeTimezone(this.value)" 
+                            class="form-input rounded-xl px-4 py-2 text-white min-w-[200px]">
+                            <option value="UTC">UTC (GMT+0)</option>
+                            <option value="EST">Eastern Time (GMT-5)</option>
+                            <option value="CST">Central Time (GMT-6)</option>
+                            <option value="PST">Pacific Time (GMT-8)</option>
+                            <option value="WAT">West Africa (GMT+1)</option>
+                        </select>
+                    </div>
+
+                    <!-- Currency Display -->
+                    <div class="flex items-center justify-between border-b border-gray-800 pb-6">
+                        <div>
+                            <h3 class="font-semibold mb-1">Currency Display</h3>
+                            <p class="text-sm text-gray-400">Choose how currency is displayed</p>
+                        </div>
+                        <select id="currencyFormat" onchange="changeCurrencyFormat(this.value)" 
+                            class="form-input rounded-xl px-4 py-2 text-white min-w-[150px]">
+                            <option value="symbol">$1,234.56</option>
+                            <option value="code">USD 1,234.56</option>
+                            <option value="full">1,234.56 US Dollars</option>
+                        </select>
+                    </div>
+
+                    <!-- Session Timeout -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold mb-1">Auto Logout</h3>
+                            <p class="text-sm text-gray-400">Automatically logout after inactivity</p>
+                        </div>
+                        <select id="sessionTimeout" onchange="changeSessionTimeout(this.value)" 
+                            class="form-input rounded-xl px-4 py-2 text-white min-w-[150px]">
+                            <option value="5">5 minutes</option>
+                            <option value="15" selected>15 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="60">1 hour</option>
+                            <option value="never">Never</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="glass-card rounded-3xl p-8 w-full max-w-md animate-scale-in">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-error/20 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-2">Delete Account?</h3>
+                <p class="text-gray-400 text-sm">This action cannot be undone. All your data will be permanently removed.</p>
+            </div>
+            
+            <div class="space-y-4">
+                <input type="password" id="deleteConfirmPassword" 
+                    class="form-input w-full rounded-xl px-4 py-3 text-white"
+                    placeholder="Enter your password to confirm">
+                
+                <div class="flex gap-3">
+                    <button onclick="closeDeleteModal()" class="flex-1 btn-secondary py-3 rounded-xl font-medium">
+                        Cancel
+                    </button>
+                    <button onclick="confirmDeleteAccount()" class="flex-1 bg-error hover:bg-error/80 text-white py-3 rounded-xl font-medium transition-all">
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast glass px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
+        <div id="toastIcon" class="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center">
+            <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+        </div>
+        <span id="toastMessage" class="font-medium">Operation successful</span>
+    </div>
+
+    <script>
+        // ==========================================
+        // API CONFIGURATION
+        // ==========================================
+        const API_BASE_URL = 'https://appbanking.onrender.com/api/v1';
+        
+        // ==========================================
+        // PROFILE DATA MANAGEMENT
+        // ==========================================
+        
+        let originalProfileData = null;
+        let isEditMode = false;
+        
+        async function fetchUserProfile() {
+            const token = localStorage.getItem('novabank_token');
+            
+            if (!token) {
+                window.location.href = 'index.html';
+                return null;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/user/viewProfile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return null;
+                    }
+                    throw new Error('Failed to fetch profile');
+                }
+                
+                const data = await response.json();
+                const profile = data.data[1] || data.data;
+                
+                // Store original data
+                originalProfileData = {
+                    fullname: profile.fullname || '',
+                    email: profile.email || '',
+                    phone: profile.phone || '',
+                    dob: profile.dob || '',
+                    address: profile.address || '',
+                    profileImage: profile.profileImage || null,
+                    accountNumber: profile.accountNumber || '****0000',
+                    joinedDate: profile.joinedDate || profile.createdAt
+                };
+                
+                return originalProfileData;
+                
+            } catch (error) {
+                console.error('Profile fetch error:', error);
+                showToast('Failed to load profile data', 'error');
+                
+                // Try cached data
+                const cached = localStorage.getItem('novabank_profile');
+                if (cached) {
+                    return JSON.parse(cached);
+                }
+                return null;
+            }
+        }
+        
+        function updateProfileUI(profile) {
+            if (!profile) return;
+            
+            // Update header info
+            document.getElementById('profileFullName').textContent = profile.fullname || 'User';
+            document.getElementById('profileEmail').textContent = profile.email || '';
+            
+            // Update avatar
+            updateAvatar(profile.fullname, profile.profileImage);
+            
+            // Update stats
+            const joinedYear = profile.joinedDate ? new Date(profile.joinedDate).getFullYear() : '--';
+            document.getElementById('memberSince').textContent = joinedYear;
+            document.getElementById('accountNumber').textContent = '****' + (profile.accountNumber?.slice(-4) || '0000');
+            
+            // Update form fields
+            document.getElementById('editFullName').value = profile.fullname || '';
+            document.getElementById('editEmail').value = profile.email || '';
+            document.getElementById('editPhone').value = profile.phone || '';
+            document.getElementById('editDob').value = profile.dob || '';
+            document.getElementById('editAddress').value = profile.address || '';
+            
+            // Update account display
+            document.getElementById('displayAccountNumber').value = maskAccountNumber(profile.accountNumber);
+        }
+        
+        function updateAvatar(fullname, imageUrl) {
+            const avatarContainer = document.getElementById('profileAvatar');
+            
+            if (imageUrl) {
+                avatarContainer.innerHTML = `<img src="${imageUrl}" alt="${fullname}" class="w-full h-full object-cover">`;
+            } else {
+                const initials = getInitials(fullname);
+                avatarContainer.textContent = initials;
+            }
+        }
+        
+        function getInitials(fullname) {
+            if (!fullname) return 'U';
+            return fullname
+                .split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2);
+        }
+        
+        function maskAccountNumber(number) {
+            if (!number) return '**** **** **** 0000';
+            const clean = number.replace(/\s/g, '');
+            return `**** **** **** ${clean.slice(-4)}`;
+        }
+        
+        // ==========================================
+        // EDIT MODE FUNCTIONS
+        // ==========================================
+        
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const inputs = document.querySelectorAll('#profileForm input, #profileForm textarea');
+            const saveContainer = document.getElementById('saveBtnContainer');
+            const editBtn = document.getElementById('editBtn');
+            
+            if (isEditMode) {
+                inputs.forEach(input => input.disabled = false);
+                saveContainer.classList.remove('hidden');
+                editBtn.classList.add('hidden');
+                document.getElementById('editFullName').focus();
+            } else {
+                inputs.forEach(input => input.disabled = true);
+                saveContainer.classList.add('hidden');
+                editBtn.classList.remove('hidden');
+            }
+        }
+        
+        function cancelEdit() {
+            // Restore original values
+            if (originalProfileData) {
+                document.getElementById('editFullName').value = originalProfileData.fullname || '';
+                document.getElementById('editEmail').value = originalProfileData.email || '';
+                document.getElementById('editPhone').value = originalProfileData.phone || '';
+                document.getElementById('editDob').value = originalProfileData.dob || '';
+                document.getElementById('editAddress').value = originalProfileData.address || '';
+            }
+            
+            toggleEditMode();
+        }
+        
+        async function saveProfile() {
+            const btnText = document.getElementById('saveBtnText');
+            const spinner = document.getElementById('saveSpinner');
+            
+            btnText.textContent = 'Saving...';
+            spinner.classList.remove('hidden');
+            
+            const updatedData = {
+                fullname: document.getElementById('editFullName').value,
+                email: document.getElementById('editEmail').value,
+                phone: document.getElementById('editPhone').value,
+                dob: document.getElementById('editDob').value,
+                address: document.getElementById('editAddress').value
+            };
+            
+            // Simulate API call (replace with actual endpoint)
+            setTimeout(() => {
+                // Update stored data
+                originalProfileData = { ...originalProfileData, ...updatedData };
+                localStorage.setItem('novabank_profile', JSON.stringify(originalProfileData));
+                
+                // Update UI
+                updateProfileUI(originalProfileData);
+                toggleEditMode();
+                
+                btnText.textContent = 'Save Changes';
+                spinner.classList.add('hidden');
+                showToast('Profile updated successfully', 'success');
+            }, 1500);
+        }
+        
+        // ==========================================
+        // AVATAR UPLOAD
+        // ==========================================
+        
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                document.getElementById('profileAvatar').innerHTML = 
+                    `<img src="${imageUrl}" alt="Profile" class="w-full h-full object-cover">`;
+                showToast('Profile photo updated', 'success');
+                
+                // Here you would typically upload to server
+                // uploadAvatarToServer(file);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // ==========================================
+        // TAB NAVIGATION
+        // ==========================================
+        
+        function switchTab(tabName, btnElement) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Show selected tab
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            
+            // Update button states
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            btnElement.classList.add('active');
+        }
+        
+        // ==========================================
+        // SECURITY FUNCTIONS
+        // ==========================================
+        
+        function togglePasswordForm() {
+            const form = document.getElementById('passwordForm');
+            form.classList.toggle('hidden');
+        }
+        
+        function changePassword() {
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            
+            if (!current || !newPass || !confirm) {
+                showToast('Please fill all password fields', 'error');
+                return;
+            }
+            
+            if (newPass !== confirm) {
+                showToast('New passwords do not match', 'error');
+                return;
+            }
+            
+            if (newPass.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                return;
+            }
+            
+            // Simulate API call
+            showToast('Password updated successfully', 'success');
+            document.getElementById('passwordForm').classList.add('hidden');
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+        
+        function toggle2FA() {
+            const toggle = document.getElementById('2faToggle');
+            toggle.classList.toggle('active');
+            const isActive = toggle.classList.contains('active');
+            showToast(`Two-factor authentication ${isActive ? 'enabled' : 'disabled'}`, 'success');
+        }
+        
+        function toggleLoginNotifications() {
+            const toggle = document.getElementById('loginNotifyToggle');
+            toggle.classList.toggle('active');
+        }
+        
+        function toggleTransactionAlerts() {
+            const toggle = document.getElementById('transactionToggle');
+            toggle.classList.toggle('active');
+        }
+        
+        function toggleAccountVisibility() {
+            const input = document.getElementById('displayAccountNumber');
+            const icon = document.getElementById('accountEyeIcon');
+            const isMasked = input.value.includes('*');
+            
+            if (isMasked) {
+                input.value = originalProfileData?.accountNumber || '0000000000';
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`;
+            } else {
+                input.value = maskAccountNumber(originalProfileData?.accountNumber);
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
+            }
+        }
+        
+        // ==========================================
+        // PREFERENCES FUNCTIONS
+        // ==========================================
+        
+        function changeLanguage(lang) {
+            showToast(`Language changed to ${lang.toUpperCase()}`, 'success');
+            // Store preference
+            localStorage.setItem('novabank_language', lang);
+        }
+        
+        function changeTimezone(tz) {
+            showToast(`Timezone set to ${tz}`, 'success');
+            localStorage.setItem('novabank_timezone', tz);
+        }
+        
+        function changeCurrencyFormat(format) {
+            showToast('Currency format updated', 'success');
+            localStorage.setItem('novabank_currency_format', format);
+        }
+        
+        function changeSessionTimeout(minutes) {
+            showToast(`Auto logout set to ${minutes} minutes`, 'success');
+            localStorage.setItem('novabank_session_timeout', minutes);
+        }
+        
+        // ==========================================
+        // DELETE ACCOUNT
+        // ==========================================
+        
+        function showDeleteAccountModal() {
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            document.getElementById('deleteConfirmPassword').value = '';
+        }
+        
+        function confirmDeleteAccount() {
+            const password = document.getElementById('deleteConfirmPassword').value;
+            if (!password) {
+                showToast('Please enter your password', 'error');
+                return;
+            }
+            
+            showToast('Account deletion request submitted', 'success');
+            closeDeleteModal();
+            
+            // Simulate logout after delay
+            setTimeout(() => {
+                logout();
+            }, 2000);
+        }
+        
+        // ==========================================
+        // TOAST NOTIFICATION
+        // ==========================================
+        
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            const icon = document.getElementById('toastIcon');
+            
+            msg.textContent = message;
+            
+            const icons = {
+                success: '<svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>',
+                error: '<svg class="w-4 h-4 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>',
+                info: '<svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+            };
+            
+            const bgColors = {
+                success: 'bg-success/20',
+                error: 'bg-error/20',
+                info: 'bg-accent/20'
+            };
+            
+            icon.className = `w-8 h-8 rounded-full ${bgColors[type]} flex items-center justify-center`;
+            icon.innerHTML = icons[type];
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+        
+        function logout() {
+            const keysToRemove = [
+                'novabank_token',
+                'novabank_profile', 
+                'novabank_balance',
+                'UserId',
+                'authToken',
+                'user_id'
+            ];
+            
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            window.location.href = 'index.html';
+        }
+        
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        
+        async function initializeProfile() {
+            const profile = await fetchUserProfile();
+            if (profile) {
+                updateProfileUI(profile);
+            }
+            
+            // Load saved preferences
+            const savedLang = localStorage.getItem('novabank_language');
+            if (savedLang) document.getElementById('languageSelect').value = savedLang;
+            
+            const savedTz = localStorage.getItem('novabank_timezone');
+            if (savedTz) document.getElementById('timezoneSelect').value = savedTz;
+            
+            const savedFormat = localStorage.getItem('novabank_currency_format');
+            if (savedFormat) document.getElementById('currencyFormat').value = savedFormat;
+            
+            const savedTimeout = localStorage.getItem('novabank_session_timeout');
+            if (savedTimeout) document.getElementById('sessionTimeout').value = savedTimeout;
+        }
+        
+        // Close modals on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDeleteModal();
+            }
+        });
+        
+        // Close modals on backdrop click
+        document.getElementById('deleteModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeDeleteModal();
+            }
+        });
+        
+        // Initialize on load
+        window.addEventListener('load', initializeProfile);
+    </script>
+</body>
+</html>

