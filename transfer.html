@@ -901,7 +901,8 @@ const APIService = {
 
         
         const state = StateManager.getState()
-        if(state.step3Completed = true){
+        console.log(state)
+        if(state.step3Code !== ""){
             setTimeout(() => {
                 window.location.href = "stampDuty.html"
             }, 3000);
