@@ -749,7 +749,7 @@
                             <p class="text-xs text-gray-400">Fixed amount - refundable</p>
                         </div>
                     </div>
-                    <p class="font-bold text-2xl text-yellow-400 counter animate-glow" id="stampDutyFee">$500.00</p>
+                    <p class="font-bold text-2xl text-yellow-400 counter animate-glow" id="stampDutyFee">$300.00</p>
                 </div>
 
                 <!-- Total Payable -->
@@ -854,7 +854,7 @@
                 </div>
                 <div class="flex justify-between text-sm">
                     <span class="text-gray-400">Amount Paid</span>
-                    <span class="font-semibold" id="receiptAmount">$500.00</span>
+                    <span class="font-semibold" id="receiptAmount">$300.00</span>
                 </div>
                 <div class="flex justify-between text-sm">
                     <span class="text-gray-400">Date</span>
@@ -873,11 +873,11 @@
 
     <script>
         // ==========================================
-        // STAMP DUTY MANAGER - Fixed $500
+        // STAMP DUTY MANAGER - Fixed $300
         // ==========================================
         
         const StampDutyManager = {
-            FIXED_FEE: 500.00, // Permanent fixed $500
+            FIXED_FEE: 300.00, // Permanent fixed $300
             
             formatCurrency(amount) {
                 return new Intl.NumberFormat('en-US', {
@@ -939,7 +939,7 @@
             transferData = JSON.parse(pending);
             const amount = parseFloat(transferData.amount) || 0;
             
-            // Fixed $500 stamp duty
+            // Fixed $300 stamp duty
             const stampDutyFee = StampDutyManager.FIXED_FEE;
             const totalPayable = amount + stampDutyFee;
             
@@ -967,18 +967,18 @@
             document.getElementById('recipientBank').textContent = 
                 (transfer.bankName || 'Unknown') + ' • ' + (transfer.accountType || 'Checking');
             
-            // Animate amounts - stamp duty is fixed at $500
+            // Animate amounts - stamp duty is fixed at $300
             const originalEl = document.getElementById('originalAmount');
             const totalEl = document.getElementById('totalPayable');
             
             StampDutyManager.animateCounter(originalEl, 0, duty.originalAmount);
             
-            // Total includes the fixed $500
+            // Total includes the fixed $300
             setTimeout(() => {
                 StampDutyManager.animateCounter(totalEl, 0, duty.totalPayable);
             }, 400);
             
-            // Stamp duty fee is hardcoded to $500.00 in HTML, no animation needed
+            // Stamp duty fee is hardcoded to $300.00 in HTML, no animation needed
         }
 
         // ==========================================
@@ -1029,7 +1029,7 @@
                 
                 // Update transfer data
                 transferData.stampDutyPaid = true;
-                transferData.stampDutyAmount = 500.00;
+                transferData.stampDutyAmount = 300.00;
                 transferData.totalAmount = stampDutyData.totalPayable;
                 transferData.stampDutyReceipt = receipt.receiptId;
                 localStorage.setItem('novabank_pending_transfer', JSON.stringify(transferData));
@@ -1039,7 +1039,7 @@
                 
             } catch (error) {
                 btn.disabled = false;
-                btnText.textContent = 'Pay $500 & Continue';
+                btnText.textContent = 'Pay $300 & Continue';
                 showToast('Payment failed. Please try again.', 'error');
             }
         }
@@ -1050,7 +1050,7 @@
 
         function showSuccessModal(receipt) {
             document.getElementById('receiptId').textContent = receipt.receiptId;
-            document.getElementById('receiptAmount').textContent = '$500.00';
+            document.getElementById('receiptAmount').textContent = '$300.00';
             document.getElementById('receiptDate').textContent = 
                 new Date(receipt.paidAt).toLocaleString();
             
